@@ -76,7 +76,6 @@ def modify_review(action):
             my_score = int(request.form['my_score'])
             my_content = request.form['my_content']
             phone_number = request.form['phone_number']
-            print("p=", my_score)
             branch_name = request.form['branch_name']
 
             review = Review.query.filter_by(phone_number=phone_number, branch_name=branch_name).first()
