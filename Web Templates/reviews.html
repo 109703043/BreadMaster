@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>店家資訊</title>
+</head>
+<body>
+    <h1>{{ store.branch_name }}店</h1>
+    <p>電話：{{ store.phone_number }}</p>
+    <p>營業時間：{{ store.business_hours }}</p>
+    <p>地址：{{ store.address }}</p>
+
+    {% set phone_number = buyer.phone_number %}
+    {% set branch_name = store.branch_name %}
+
+    {% if is_favorite %}
+        <form method="POST" action="/reviews/delete_favorite">
+            <input type="hidden" name="phone_number" value="{{ phone_number }}">
+            <input type="hidden" name="branch_name" value="{{ branch_name }}">
+            <button type="submit" id="remove-favorite-btn">從常用店家刪除</button>
+        </form>
+    {% else %}
+        <form method="POST" action="/reviews/add_favorite">
+            <input type="hidden" name="phone_number" value="{{ phone_number }}">
+            <input type="hidden" name="branch_name" value="{{ branch_name }}">
+            <button type="submit" id="add-favorite-btn">加入常用店家</button>
+        </form>
+    {% endif %}
+    
+    <hr>
+    <h4>用戶評論</h4>
+    <hr>
+    {% if reviews %}
+        {% for review in reviews %}
+            {% if review.phone_number != phone_number %}
+                <h3>Phone Number: {{ review.phone_number }}</h3>
+                {% if review.score != 0 %}
+                    <p>Score: {{ review.score }}</p>
+                {% endif %}
+                {% if review.content %}
+                    <p>Content: {{ review.content }}</p>
+                {% endif %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>尚無評論</p>
+    {% endif %}
+
+    <form method="POST" action="/reviews/modify_review"> 
+        <h3>我的評論:</h3>
+        <p>Score: 
+            <select name="my_score">
+                <option value= 0 {% if my_score == 0 %}selected{% endif %}>請選擇</option>   <!-- None = 0 -->
+                <option value= 1 {% if my_score == 1 %}selected{% endif %}>1</option>
+                <option value= 2 {% if my_score == 2 %}selected{% endif %}>2</option>
+                <option value= 3 {% if my_score == 3 %}selected{% endif %}>3</option>
+                <!-- 添加其他選項 -->
+            </select>
+        </p>
+        <p>Content: <input type="text" name="my_content" value="{{ my_content }}"></p>
+        <p><input type="hidden" name="phone_number" value="{{ phone_number }}"></p>
+        <p><input type="hidden" name="branch_name" value="{{ branch_name }}"></p>
+        <p><button type="submit">送出</button></p>
+    </form>
+
+</body>
+</html>
