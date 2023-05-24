@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>選定特定店家</title>
+</head>
+<body>
+    <h1>常用店家</h1>
+    <ul>
+        {% for store in frequently_used_stores %}
+        <li>{{ store.branch_name }} - 電話：{{ store.phone_number }}，營業時間：{{ store.business_hours }}，地址：{{ store.address }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>所有店家</h1>
+    <ul>
+        {% for store in all_stores %}
+            <li>{{ store.branch_name }} - 電話：{{ store.phone_number }}，營業時間：{{ store.business_hours }}，地址：{{ store.address }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/shopping_cart">查看購物車</a>
+</body>
+</html>
