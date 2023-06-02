@@ -1,8 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
         <meta charset="UTF-8">
         <title>訂單詳細資訊</title>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td{
+                border: 1px solid black;
+                padding: 8px;
+            }
+        </style>
 </head>
 <body>
         <h1>訂單詳細資訊</h1>
@@ -11,15 +20,15 @@
             <tbody>
                 <tr>
                     <td>訂單編號</td>
-                    <td>31415926535</td>
+                    <td>{{ order.order_number }}</td>
                 </tr>
                 <tr>
                     <td>訂單時間</td>
-                    <td>2023/13/32 03:00</td>
+                    <td>{{ order.order_time }}</td>
                 </tr>
                 <tr>
                     <td>狀態</td>
-                    <td>待取貨</td>
+                    <td>{{ order.order_status}}</td>
                 </tr>
             </tbody>
         </table>
