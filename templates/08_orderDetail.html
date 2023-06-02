@@ -51,7 +51,11 @@
         <tbody>
             {% for i in range(order_item_len) %}
             <tr>
-                <td>{{ order_item[i].branch_name }}</td>
+                <td>
+                    <form action="/branch/{{ order_item[i].branch_name }}">
+                        <input type="submit" value="{{ order_item[i].branch_name }}"/>
+                    </form>
+                </td>
                 <td>{{ product_name[i] }}</td>
                 <td>{{ order_item[i].quantity_ordered }}</td>
                 <td>$ {{ order_item[i].item_price|int }}</td>
