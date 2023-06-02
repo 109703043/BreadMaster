@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>訂單詳細資訊</title>
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        .productTable{
+            width: 100%;
+        }
+        th, td{
+            border: 1px solid black;
+            padding: 8px;
+        }
+        th{
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+<body>
+    <h1>訂單詳細資訊</h1>
+    <!-- order outline -->
+    <table>
+        <tbody>
+            <tr>
+                <td>訂單編號</td>
+                <td>{{ order.order_number }}</td>
+            </tr>
+            <tr>
+                <td>訂單時間</td>
+                <td>{{ order.order_time }}</td>
+            </tr>
+            <tr>
+                <td>狀態</td>
+                <td>{{ order.order_status}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <!-- order detail -->
+    <table class="productTable" style="text-align: center;">
+        <thead>
+            <tr>
+                <th>分店</th>
+                <th>商品名稱</th>
+                <th>數量</th>
+                <th>金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(order_item_len) %}
+            <tr>
+                <td>{{ order_item[i].branch_name }}</td>
+                <td>{{ product_name[i] }}</td>
+                <td>{{ order_item[i].quantity_ordered }}</td>
+                <td>$ {{ order_item[i].item_price|int }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" style="border: 0px;"></td>
+                <td style="background-color: #EEEEEE;">總金額</td>
+                <td style="background-color: #EEEEEE;">$ {{ price_sum|int }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

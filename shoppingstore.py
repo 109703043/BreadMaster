@@ -8,7 +8,7 @@ import pymysql
 from model import db, Buyer, Store, Review, Frequently_Used_Store, Leftover_History, Leftover_Product, Order, Order_Item 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Frankie0414@localhost:3306/BreadMaster' # 改MySQL檔案路徑
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/BreadMaster' # 改MySQL檔案路徑
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
@@ -17,7 +17,7 @@ connection = pymysql.connect(
     host='localhost',
     port=3306,
     user='root',
-    password='Frankie0414'
+    password='root'
 )
 
 # 建立空schema
