@@ -34,9 +34,38 @@ finally:
 
 
 @app.route('/buyerOrderOutline/<phone_number>/') # phone_number of the buyer
-def show_orderOutline(order_number):
+def show_orderOutline(phone_number):
 
-    return
+    order_list = Order.query.filter_by(phone_number = phone_number)
+
+    return render_template('07_orderOutline.html',
+                           order_list = order_list)
+
+
+
+@app.route('/buyerOrderDetail/<order_number>/') # order_number of the order
+def show_orderDetail(order_number):
+
+    order = Order.query.filter_by(order_number = order_number).first()
+
+    order_item = Order_Item.query.filter_by(order_number = order_number)
+
+    product_name = list()
+    price_sum = 0
+
+    for p in order_item:
+        product_name.append(
+            Leftover_Product.query.filter_by(branch_name = p.branch_name, 
+                                             product_code = p.product_code).first().product_name
+        )
+        price_sum += p.item_price
+
+    return render_template('08_orderDetail.html',
+                           order = order, 
+                           order_item = order_item, 
+                           product_name = product_name, 
+                           price_sum = price_sum, 
+                           order_item_len = order_item.count())
 
 
 

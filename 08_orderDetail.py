@@ -50,7 +50,7 @@ def show_orderDetail(order_number):
         )
         price_sum += p.item_price
 
-    return render_template('orderDetail.html',
+    return render_template('08_orderDetail.html',
                            order = order, 
                            order_item = order_item, 
                            product_name = product_name, 
