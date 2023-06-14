@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>訂單詳細資訊</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        .productTable {
+            width: 80%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #EEEEEE;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .buttons-container form {
+            margin-left: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function updateOrderStatus(url) {
+            fetch(url, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const orderNumber = url.split('/')[2];
+                        const statusElement = document.getElementById('order-status-' + orderNumber);
+                        if (statusElement && data.new_status) {
+                            statusElement.textContent = data.new_status;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        $(document).ready(function () {
+            $('form').submit(function (event) {
+                event.preventDefault();
+                const form = $(this);
+                const url = form.attr('action');
+                const orderNumber = url.split('/')[2];
+
+                updateOrderStatus(url);
+
+                // 更新狀態欄位
+                const statusElement = $('#order-status-' + orderNumber);
+                if (statusElement) {
+                    let newStatus = '';
+                    if (form.attr('action').includes('accept')) {
+                        newStatus = 'Order Accepted';
+                    } else if (form.attr('action').includes('complete')) {
+                        newStatus = 'Completed';
+                    }
+                    statusElement.text(newStatus);
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <h1>訂單詳細資訊</h1>
+    <!-- order outline -->
+    <table>
+        <tbody>
+            <tr>
+                <td>訂單編號</td>
+                <td>{{ order.order_number }}</td>
+            </tr>
+            <tr>
+                <td>訂單時間</td>
+                <td>{{ order.order_time }}</td>
+            </tr>
+            <tr>
+                <td>狀態</td>
+                <td id="order-status-{{ order.order_number }}">{{ order.order_status }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <!-- order detail -->
+    <table class="productTable" style="text-align: center;">
+        <thead>
+            <tr>
+                <th>商品名稱</th>
+                <th>數量</th>
+                <th>金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(order_item_len) %}
+            <tr>
+                <td>{{ product_name[i] }}</td>
+                <td>{{ order_item[i].quantity_ordered }}</td>
+                <td>$ {{ order_item[i].item_price|int }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <!-- update order status buttons -->
+    <div class="buttons-container">
+        <form method="POST" action="/update_order_status/{{ order.order_number }}/accept">
+            {% if order.order_status == 'Pending Order' %}
+            <button type="submit">接受訂單</button>
+            {% else %}
+            <button type="submit" disabled>接受訂單</button>
+            {% endif %}
+        </form>
+        <form method="POST" action="/update_order_status/{{ order.order_number }}/complete">
+            {% if order.order_status == 'Order Accepted' %}
+            <button type="submit">完成訂單</button>
+            {% else %}
+            <button type="submit" disabled>完成訂單</button>
+            {% endif %}
+        </form>
+    </div>
+</body>
+
+</html>
