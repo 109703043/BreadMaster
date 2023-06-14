@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>訂單紀錄一覽</title>
+    <style>
+        table {
+            width: 50%;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #EEEEEE;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>訂單紀錄一覽</h1>
+    <!-- order outline list -->
+    <table>
+        <thead>
+            <tr>
+                <th>訂單編號</th>
+                <th>訂單時間</th>
+                <th>狀態</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in order_list %}
+            <tr>
+                <td>
+                    <form action="/branchOrderDetail/{{ order.order_number }}">
+                        <input type="submit" value="{{ order.order_number }}" />
+                    </form>
+                </td>
+                <td>{{ order.order_time }}</td>
+                <td>{{ order.order_status}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

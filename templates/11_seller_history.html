@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>歷史訂單</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>歷史訂單</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>訂單編號</th>
+                <th>訂單時間</th>
+                <th>買家電話</th>
+                <th>買家姓名</th>
+                <th>商品編號</th>
+                <th>價格</th>
+                <th>數量</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order_item, order, buyer_name in merged_data %}
+            <tr>
+                <td>{{ order.order_number }}</td>
+                <td>{{ order.order_time }}</td>
+                <td>{{ order.phone_number }}</td>
+                <td>{{ buyer_name }}</td>
+                <td>{{ order_item.product_code }}</td>
+                <td>{{ order_item.item_price }}</td>
+                <td>{{ order_item.quantity_ordered }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>
