@@ -10,7 +10,7 @@ import pymysql
 from model import db, Buyer, Store, Review, Frequently_Used_Store, Leftover_History, Leftover_Product, Order, Order_Item 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Go140814@localhost:3306/BreadMaster'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/BreadMaster'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
@@ -19,7 +19,7 @@ connection = pymysql.connect(
     host='localhost',
     port=3306,
     user='root',
-    password='Go140814'
+    password='root'
 )
 
 # create empty schema
