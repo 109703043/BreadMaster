@@ -222,6 +222,38 @@ def complete_order(order_number):
 
 
 
+### 11 店家: 歷史紀錄 http://127.0.0.1:5000/Daan%20Store/branch_history
+@app.route('/<branch_name>/branch_history') # branch的name
+def show_branch_history_orders(branch_name):
+
+    # 根據分店名稱 (branch_name) 從 Order_Item 表中取得該店家的所有訂單項目
+    order_items = Order_Item.query.filter_by(branch_name=branch_name).all()
+
+    # 取得訂單項目中的訂單編號
+    order_numbers = [order_item.order_number for order_item in order_items]
+
+    # 根據訂單編號從 Order 表中取得訂單資訊
+    orders = Order.query.filter(Order.order_number.in_(order_numbers)).all()
+
+    # 根據買家電話號從 Buyer 表中取得買家名字
+    buyer_phones = [order.phone_number for order in orders]
+    buyer_name = Buyer.query.filter(Buyer.phone_number.in_(buyer_phones)).all()
+
+    # 將買家名字以字典形式存儲，方便後續查詢
+    buyer_names = {buyer.phone_number: buyer.name for buyer in buyer_name}
+
+    # 將訂單項目和訂單合併
+    merged_data = []
+    for order_item in order_items:
+        order = next((order for order in orders if order.order_number == order_item.order_number), None)
+        if order:
+            buyer_name = buyer_names.get(order.phone_number)
+            merged_data.append((order_item, order, buyer_name))
+
+    return render_template('11_seller_history.html', merged_data = merged_data)
+
+
+
 if __name__ =="__main__":
     with app.app_context():
         db.create_all()
