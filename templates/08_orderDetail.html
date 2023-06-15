@@ -52,7 +52,7 @@
             {% for i in range(order_item_len) %}
             <tr>
                 <td>
-                    <form action="/branch/{{ order_item[i].branch_name }}">
+                    <form action="/purchase/{{ phone_number }}/{{ order_item[i].branch_name }}">
                         <input type="submit" value="{{ order_item[i].branch_name }}"/>
                     </form>
                 </td>

@@ -32,7 +32,7 @@
             {% for order in order_list %}
             <tr>
                 <td>
-                    <form action="/buyerOrderDetail/{{ order.order_number }}">
+                    <form action="/buyerOrderDetail/{{ phone_number }}/{{ order.order_number }}">
                         <input type="submit" value="{{ order.order_number }}"/>
                     </form>
                 </td>

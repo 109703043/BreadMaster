@@ -247,13 +247,14 @@ def show_buyer_orderOutline(phone_number):
     order_list = Order.query.filter_by(phone_number = phone_number)
 
     return render_template('07_orderOutline.html',
-                           order_list = order_list)
+                           order_list = order_list, 
+                           phone_number = phone_number)
 
 
 
 ### 08 買家: 訂單詳細 http://127.0.0.1:5000/buyerOrderDetail/10001
-@app.route('/buyerOrderDetail/<order_number>') # order_number of the order
-def show_buyer_orderDetail(order_number):
+@app.route('/buyerOrderDetail/<phone_number>/<order_number>') # order_number of the order
+def show_buyer_orderDetail(phone_number, order_number):
 
     order = Order.query.filter_by(order_number = order_number).first()
 
@@ -274,7 +275,8 @@ def show_buyer_orderDetail(order_number):
                            order_item = order_item, 
                            product_name = product_name, 
                            price_sum = price_sum, 
-                           order_item_len = order_item.count())
+                           order_item_len = order_item.count(), 
+                           phone_number = phone_number)
 
 
 
