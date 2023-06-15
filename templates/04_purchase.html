@@ -6,10 +6,10 @@
     </head>
     <body>
      <h1>店家基本資訊</h1>
-     <p>店名: {{store_branch_name}}</p>
-     <p>電話: {{store_phone_number}}</p>
-     <p>營業時間: {{store_business_hours}}</p>
-     <p>地址: {{store_address}}</p>
+     <p>店名: {{store.branch_name}}</p>
+     <p>電話: {{store.phone_number}}</p>
+     <p>營業時間: {{store.business_hours}}</p>
+     <p>地址: {{store.address}}</p>
      
      <style>
       .button-container {
@@ -24,22 +24,30 @@
   </style>
   <div class="button-container">
      <form action="/addToFavorites" method="post">
+        <input type="hidden" name="phone_number" value="{{ phone_number }}">
+        <input type="hidden" name="branch_name" value="{{ branch_name }}">
         <button id="addToFavoritesBtn">加入常用店家</button>
       </form>
 
       <form action="/removeFromFavorites" method="post">
+        <input type="hidden" name="phone_number" value="{{ phone_number }}">
+        <input type="hidden" name="branch_name" value="{{ branch_name }}">
         <button id="removeFromFavoritesBtn">刪除常用店家</button>
       </form>
       
-      <form action="/reviews" method="get">
+      <form action="/reviews/{{ phone_number }}/{{ branch_name }}" method="get">
+        <input type="hidden" name="phone_number" value="{{ phone_number }}">
+        <input type="hidden" name="branch_name" value="{{ branch_name }}">
         <button id="reviewsBtn">查看店家評論</button>
       </form>
      
      <form action="/shoppingCart" method="get">
+      <input type="hidden" name="phone_number" value="{{ phone_number }}">
       <button id="shoppingCartBtn">查看購物車</button>
      </form>
 
-     <form action="/shoppingstore" method="get">
+     <!-- <form action="/shoppingstore" method="get"> -->
+     <form action="/{{ phone_number }}/shoppingstore">
       <button id="shoppingstoreBtn">回到選購特定店家</button>
      </form>   
    </div>  
@@ -49,7 +57,7 @@
         {% for leftover_product in leftover_products %}
           <div>
           <input type="checkbox" name="leftover_product" value="{{ leftover_product.product_code }}">
-            <label>{{ leftover_product.branch_name }},&nbsp;&nbsp;</label>
+            <label>{{leftover_product.branch_name }},&nbsp;&nbsp;</label>
             <label>{{leftover_product.product_code}},&nbsp;&nbsp;</label>
             <label>{{leftover_product.expiration_date}},&nbsp;&nbsp;</label>
             <label>{{leftover_product.product_name}},&nbsp;&nbsp;</label>
@@ -58,11 +66,13 @@
             <label>{{leftover_product.product_description}}</label>
           </div>
         {% endfor %}
+      <input type="hidden" name="phone_number" value="{{ phone_number }}">
+      <input type="hidden" name="branch_name" value="{{ branch_name }}">
+      <button id="orderBtn">加入訂單</button>
       {% else %}
          {{message}}
       {% endif %}   
       <br/>
-      <button id="orderBtn">加入訂單</button>
     </form>
     </body>
 </html>

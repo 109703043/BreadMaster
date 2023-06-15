@@ -4,6 +4,8 @@ from flask import request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
 
+from datetime import datetime
+
 from model import db, Buyer, Store, Order, Leftover_Product, Order_Item, Leftover_History, Review, Frequently_Used_Store  #, tables
 
 app = Flask(__name__)
@@ -50,6 +52,122 @@ def show_shoppingstore(phone_number):
     return render_template('03_shoppingstore.html',
                            frequently_used_stores = frequently_used_stores,
                            all_stores = all_stores)
+
+
+
+### 04 買家: 進入店家選購 http://127.0.0.1:5000/purchase/0923558899/Nandu%20Store
+@app.route('/purchase/<phone_number>/<branch_name>') # buyer.phone_number
+def purchase(phone_number, branch_name):
+   leftover_products = db.session.query(Leftover_Product).filter(Leftover_Product.branch_name == branch_name).all()
+   store = Store.query.filter_by(branch_name = branch_name).first()
+   if leftover_products != []:
+       return render_template('04_purchase.html', 
+                              leftover_products = leftover_products, 
+                              phone_number = phone_number, 
+                              branch_name = branch_name, 
+                              store = store)
+   else:
+       return render_template('04_purchase.html', 
+                              message="No leftover_product found.", 
+                              store = store)
+
+@app.route("/addToFavorites", methods=['POST'])
+def addToFavorites():
+    phone_number = request.form['phone_number']
+    branch_name = request.form['branch_name']
+    frequently_used = db.session.query(Frequently_Used_Store).filter_by(phone_number = phone_number, 
+                                                                        branch_name = branch_name).all()
+    if frequently_used  :
+        return redirect(request.referrer)
+    else:
+        new_frequently_used = Frequently_Used_Store(
+            phone_number = phone_number,
+            branch_name = branch_name
+        )
+        db.session.add(new_frequently_used)
+        db.session.commit()
+    return redirect(request.referrer)
+
+@app.route("/removeFromFavorites",methods=['POST'])
+def removeFromFavorites():
+    phone_number = request.form['phone_number']
+    branch_name = request.form['branch_name']
+    new_frequently_used_to_delete = db.session.query(Frequently_Used_Store).filter_by(phone_number = phone_number, 
+                                                                                      branch_name = branch_name).first()
+    if new_frequently_used_to_delete :
+        db.session.delete(new_frequently_used_to_delete)
+        db.session.commit()
+    return redirect(request.referrer)
+
+# @app.route("/reviews",methods=['GET','POST'])
+# def reviews():
+#     reviews = db.session.query(Review).filter(Review.branch_name == selected_store.branch_name)
+#     if reviews :
+#       for review in reviews:
+#         print(review.phone_number)
+#         print(review.branch_name)
+#         print(review.score)
+#         print(review.content)
+#     else :
+#        print("No review found.")   
+#     #return redirect(url_for('review_url'))
+#     return '我已經幫你找到特定分店的review了,看你要用甚麼變數去接收'
+
+# @app.route("/shoppingCart",methods=['GET','POST'])
+# def shoppingCart():
+#     #return redirect(url_for('shoppingCart_url'))
+#     return'進入shoppingCart頁面'
+
+# @app.route("/shoppingstore",methods=['GET','POST'])
+# def shoppingstore():
+#     #return redirect(url_for('shoppingstore_url'))
+#     return'回到shoppingstore頁面'
+
+@app.route("/order",methods=['GET','POST'])
+def order():
+    phone_number = request.form['phone_number']
+    branch_name = request.form['branch_name']
+    if request.method =='POST':
+       selected_leftover_products_key = request.form.getlist('leftover_product')  #獲取被勾選的選項列表
+       selected_leftover_products = db.session.query(Leftover_Product).filter_by(branch_name=branch_name).filter(Leftover_Product.product_code.in_(selected_leftover_products_key)).all()
+       print(selected_leftover_products_key)
+       for selected_leftover_product in selected_leftover_products :
+            if selected_leftover_product.quantity_in_stock !=0 :
+                order = Order.query.filter_by(phone_number = phone_number, 
+                                              order_status = 'Not Submit Yet').first()
+                if(order != None): # there's an order in cart
+                    order_number = order.order_number
+                else: # no order in cart
+                    order_number = db.session.query(db.func.max(Order.order_number)).scalar()+1
+                    new_order = Order(
+                        order_number= order_number,
+                        phone_number= phone_number,
+                        order_status = "Not Submit Yet",
+                        order_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    )
+                    db.session.add(new_order)
+                    db.session.commit()
+
+                order_item = Order_Item.query.filter_by(product_code = selected_leftover_product.product_code, 
+                                                        order_number = order_number).first()
+                if(order_item != None): # order_item exists
+                    order_item.quantity_ordered += 1
+                else: # have not add this item to cart yet
+                    new_order_item= Order_Item(
+                        order_number = order_number,
+                        branch_name  = branch_name,
+                        product_code  = selected_leftover_product.product_code,
+                        item_price  = selected_leftover_product.quantity_in_stock*selected_leftover_product.price,
+                        quantity_ordered = 1
+                    ) 
+                    db.session.add(new_order_item)
+                db.session.commit()
+
+                selected_leftover_product.quantity_in_stock -= 1
+                db.session.commit()
+       return redirect(url_for('purchase', phone_number = phone_number, branch_name = branch_name))
+    else :    
+       return redirect(url_for('purchase', phone_number = phone_number, branch_name = branch_name))
 
 
 
