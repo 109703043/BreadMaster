@@ -123,7 +123,7 @@ def modify_review(action):
 
 ### 07 買家: 訂單一覽 http://127.0.0.1:5000/buyerOrderOutline/0922334455
 @app.route('/buyerOrderOutline/<phone_number>') # phone_number of the buyer
-def show_orderOutline(phone_number):
+def show_buyer_orderOutline(phone_number):
 
     order_list = Order.query.filter_by(phone_number = phone_number)
 
@@ -134,7 +134,7 @@ def show_orderOutline(phone_number):
 
 ### 08 買家: 訂單詳細 http://127.0.0.1:5000/buyerOrderDetail/10001
 @app.route('/buyerOrderDetail/<order_number>') # order_number of the order
-def show_orderDetail(order_number):
+def show_buyer_orderDetail(order_number):
 
     order = Order.query.filter_by(order_number = order_number).first()
 
@@ -156,6 +156,69 @@ def show_orderDetail(order_number):
                            product_name = product_name, 
                            price_sum = price_sum, 
                            order_item_len = order_item.count())
+
+
+
+### 10-1 店家: 訂單一覽 http://127.0.0.1:5000/branchOrderOutline/Daan%20Store
+@app.route('/branchOrderOutline/<branch_name>') # phone_number of the buyer
+def show_branch_orderOutline(branch_name):
+
+    # 根據分店名稱 (branch_name) 從 Order_Item 表中取得該店家的所有訂單項目
+    order_items = Order_Item.query.filter_by(branch_name=branch_name).all()
+
+    # 取得訂單項目中的訂單編號
+    order_numbers = [order_item.order_number for order_item in order_items]
+
+    # 根據訂單編號從 Order 表中取得訂單資訊
+    order_list = Order.query.filter(Order.order_number.in_(order_numbers)).all()
+
+    return render_template('10(1)_seller_order.html',
+                           order_list = order_list)
+
+### 10-2 店家: 訂單詳細  pending   http://127.0.0.1:5000/branchOrderDetail/10018
+###                     accepted  http://127.0.0.1:5000/branchOrderDetail/10016
+###                     completed http://127.0.0.1:5000/branchOrderDetail/10026
+@app.route('/branchOrderDetail/<order_number>') # order_number of the order
+def show_seller_orderDetail(order_number):
+
+    order = Order.query.filter_by(order_number = order_number).first()
+
+    order_item = Order_Item.query.filter_by(order_number = order_number)
+
+    product_name = list()
+    price_sum = 0
+
+    for p in order_item:
+        product_name.append(
+            Leftover_Product.query.filter_by(branch_name = p.branch_name, 
+                                             product_code = p.product_code).first().product_name
+        )
+        price_sum += p.item_price
+
+    return render_template('10(2)_seller_order.html',
+                           order = order, 
+                           order_item = order_item, 
+                           product_name = product_name, 
+                           price_sum = price_sum, 
+                           order_item_len = order_item.count())
+
+@app.route('/update_order_status/<order_number>/accept', methods=['POST'])
+def accept_order(order_number):
+    order = Order.query.filter_by(order_number=order_number).first()
+    if order.order_status == 'Pending Order':
+        order.order_status = 'Order Accepted'
+        db.session.commit()
+        return redirect(url_for('show_seller_orderDetail', order_number=order_number))
+    return {'success': False}
+
+@app.route('/update_order_status/<order_number>/complete', methods=['POST'])
+def complete_order(order_number):
+    order = Order.query.filter_by(order_number=order_number).first()
+    if order.order_status == 'Order Accepted':
+        order.order_status = 'Completed'
+        db.session.commit()
+        return redirect(url_for('show_seller_orderDetail', order_number=order_number))
+    return {'success': False}
 
 
 
