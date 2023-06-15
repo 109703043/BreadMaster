@@ -51,7 +51,8 @@ def show_shoppingstore(phone_number):
     all_stores = Store.query.all()
     return render_template('03_shoppingstore.html',
                            frequently_used_stores = frequently_used_stores,
-                           all_stores = all_stores)
+                           all_stores = all_stores, 
+                           phone_number = phone_number)
 
 
 

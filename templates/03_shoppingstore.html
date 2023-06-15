@@ -12,7 +12,7 @@
         {% for store in frequently_used_stores %}
         <li>
             {{ store.branch_name }} - 電話：{{ store.phone_number }}，營業時間：{{ store.business_hours }}，地址：{{ store.address }}
-            <a href="/store_bread">查看商品</a>
+            <a href="/purchase/{{ phone_number }}/{{ store.branch_name }}">查看商品</a>
         </li>
         {% endfor %}
     </ul>
@@ -22,7 +22,7 @@
         {% for store in all_stores %}
             <li>
                 {{ store.branch_name }} - 電話：{{ store.phone_number }}，營業時間：{{ store.business_hours }}，地址：{{ store.address }}
-                <a href="/store_bread">查看商品</a>
+                <a href="/purchase/{{ phone_number }}/{{ store.branch_name }}">查看商品</a>
             </li>
         {% endfor %}
     </ul>
