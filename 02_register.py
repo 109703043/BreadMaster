@@ -33,22 +33,35 @@ finally:
     connection.close()
 
 @app.route('/', methods=['GET', 'POST'])
-def login():
-    print("enter login")
+def register():
+    print("enter register")
     if request.method == 'POST':
         print("request.method == POST")
         if 'buyer_button' in request.form:
             buyer_phone = request.form['buyer_phone']
-            return render_template('03_shoppingstore.html', phone_number = buyer_phone)
+            buyer_name = request.form['buyer_name']
+            buyer_address = request.form['buyer_address']
+            buyer_email = request.form['buyer_email']
+
+            return render_template('03_shoppingstore.html', 
+                                   phone_number=buyer_phone,
+                                   name=buyer_name,
+                                   address=buyer_address,
+                                   email=buyer_email)
         elif 'store_button' in request.form:
             store_name = request.form['store_name']
-            # 09_...html
-            return render_template('11_seller_history.html', branch_name = store_name)
-        elif 'register_button' in request.form:
-            print("click register_button")
-            return render_template('02_register.html')
+            seller_phone = request.form['seller_phone']
+            seller_business_hours = request.form['seller_business_hours']
+            seller_address = request.form['seller_address']
 
-    return render_template('01_login.html')
+            return render_template('11_seller_history.html', 
+                                   branch_name=store_name,
+                                   phone_number=seller_phone,
+                                   business_hours=seller_business_hours,
+                                   address=seller_address)
+
+    return render_template('02_register.html')
+
 
 if __name__ =="__main__":
     with app.app_context():
