@@ -36,7 +36,7 @@ finally:
 
 
 
-### 01 登入 
+### 01 登入 http://127.0.0.1:5000/login
 @app.route('/login', methods=['GET'])
 def render_login():
     return render_template('01_login.html')
@@ -59,9 +59,64 @@ def login(action):
             else:
                 return "no bruh store doesn't exist"
         elif action == 'register':
-            return render_template('02_register.html')
+            return redirect(url_for('render_register'))
+    return redirect(url_for('render_login'))
 
-    return render_template('01_login.html')
+
+
+### 02 註冊 http://127.0.0.1:5000/register
+@app.route('/register', methods=['GET'])
+def render_register():
+    return render_template('02_register.html')
+
+@app.route('/register/<action>', methods=['GET', 'POST'])
+def register(action):
+    # print("enter register")
+    if request.method == 'POST':
+        # print("request.method == POST")
+        if action == 'buyer_reg':
+            phone_number = request.form['buyer_phone']
+            name = request.form['buyer_name']
+            address = request.form['buyer_address']
+            email = request.form['buyer_email']
+            
+            # Check if a Buyer record with the given phone_number exists
+            buyer = Buyer.query.get(phone_number)
+            
+            # If a matching record is found, update the fields
+            if buyer:
+                buyer.name = name
+                buyer.address = address
+                buyer.email = email
+                db.session.commit()  # Commit the changes
+            else:
+                # If no matching record is found, create a new Buyer record
+                buyer = Buyer(phone_number=phone_number, name=name, address=address, email=email)
+                db.session.add(buyer)  # Add the new record
+                db.session.commit()  # Commit the changes
+            
+        elif action == 'store_reg':
+            branch_name = request.form['seller_store']
+            phone_number = request.form['seller_phone']
+            business_hours = request.form['seller_business_hours']
+            address = request.form['seller_address']
+            
+            # Check if a Store record with the given branch_name exists
+            store = Store.query.get(branch_name)
+            
+            # If a matching record is found, update the fields
+            if store:
+                store.phone_number = phone_number
+                store.business_hours = business_hours
+                store.address = address
+                db.session.commit()  # Commit the changes
+            else:
+                # If no matching record is found, create a new Store record
+                store = Store(branch_name=branch_name, phone_number=phone_number, business_hours=business_hours, address=address)
+                db.session.add(store)  # Add the new record
+                db.session.commit()  # Commit the changes
+            
+    return redirect(url_for('render_login'))
 
 
 
