@@ -112,7 +112,7 @@ def close_store():
     
     #要關店了，檢查有無尚未完成的訂單，全部改為'Cancelled'
     update_query = update(Order).where(
-        (Order.order_status == 'Pending Order') | (Order.order_status == 'Order Accepted')
+        (Order.order_status == 'Pending Order') | (Order.order_status == 'Order Accepted')| (Order.order_status == 'Not Submit Yet')
     ).values(order_status='Cancelled')
     db.session.execute(update_query)
 
