@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>登入</title>
+</head>
+
+<body>
+    <h2 style="text-align: center;">&nbsp;</h2>
+    <h2 style="text-align: center;">買家登入</h2>
+    <form method="POST" action="/submit">
+        <p style="text-align: center;">
+            手機號碼：<input name="buyer_phone" type="text" placeholder="請輸入手機號碼" />&nbsp;
+            <button type="submit" name="buyer_button" value="buyer_submit">確認</button>
+        </p>
+    </form>
+    <p style="text-align: center;">------ or ------</p>
+    <h2 style="text-align: center;">賣家登入</h2>
+    <form method="POST" action="/submit">
+        <p style="text-align: center;">
+            店名：<input name="seller_store" type="text" placeholder="請輸入店名" />&nbsp; &nbsp; &nbsp;&nbsp;
+            <button type="submit" name="store_button" value="store_submit">確認</button>
+        </p>
+    </form>
+    <form method="POST" action="/submit">
+        <p style="text-align: center;">&nbsp;</p>
+        <h4 style="text-align: center;">尚未註冊？&nbsp;
+        <button type="submit" name="register_button" value="register_submit">註冊</button></h4>
+    </form>
+</body>
+
+</html>
