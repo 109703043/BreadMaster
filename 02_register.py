@@ -87,7 +87,7 @@ def register(action):
                 db.session.add(store)  # Add the new record
                 db.session.commit()  # Commit the changes
             
-            return render_template('11_seller_history.html', branch_name=branch_name)
+            return render_template('09_storeLeftover.html', branch_name=branch_name)
             
     return render_template('02_register.html')
 
