@@ -36,10 +36,39 @@ finally:
 
 
 
-### 03 買家: 選店家 http://127.0.0.1:5000/0955336611/shoppingstore
+### 01 登入 
+@app.route('/login', methods=['GET'])
+def render_login():
+    return render_template('01_login.html')
+
+@app.route('/login/<action>', methods=['GET', 'POST'])
+def login(action):
+    if request.method == 'POST':
+        if action == 'buyer_login':
+            buyer_phone = request.form['buyer_phone']
+            buyer = Buyer.query.filter_by(phone_number = buyer_phone).first()
+            if(buyer != None):
+                return redirect(url_for('show_shoppingStore', phone_number = buyer_phone))
+            else:
+                return "no bruh buyer doesn't exist"
+        elif action == 'store_login':
+            store_name = request.form['seller_store']
+            store = Store.query.filter_by(branch_name = store_name).first()
+            if(store != None):
+                return redirect(url_for('show_branch_orderOutline', branch_name = store_name))
+            else:
+                return "no bruh store doesn't exist"
+        elif action == 'register':
+            return render_template('02_register.html')
+
+    return render_template('01_login.html')
+
+
+
+### 03 買家: 選店家 http://127.0.0.1:5000/0955336611/shoppingStore
 # 前一頁登入後來到「選定特定店家的頁面」，傳<phone_number>進來
-@app.route('/<phone_number>/shoppingstore') # buyer的phone_number
-def show_shoppingstore(phone_number):
+@app.route('/<phone_number>/shoppingStore') # buyer的phone_number
+def show_shoppingStore(phone_number):
     frequently_used_stores = Frequently_Used_Store.query.filter_by(phone_number = phone_number).all()
     
     # 取得所有的常用店家的 branch_name
@@ -49,7 +78,7 @@ def show_shoppingstore(phone_number):
     frequently_used_stores = Store.query.filter(Store.branch_name.in_(frequently_used_branches)).all()
 
     all_stores = Store.query.all()
-    return render_template('03_shoppingstore.html',
+    return render_template('03_shoppingStore.html',
                            frequently_used_stores = frequently_used_stores,
                            all_stores = all_stores, 
                            phone_number = phone_number)
@@ -99,30 +128,6 @@ def removeFromFavorites():
         db.session.delete(new_frequently_used_to_delete)
         db.session.commit()
     return redirect(request.referrer)
-
-# @app.route("/reviews",methods=['GET','POST'])
-# def reviews():
-#     reviews = db.session.query(Review).filter(Review.branch_name == selected_store.branch_name)
-#     if reviews :
-#       for review in reviews:
-#         print(review.phone_number)
-#         print(review.branch_name)
-#         print(review.score)
-#         print(review.content)
-#     else :
-#        print("No review found.")   
-#     #return redirect(url_for('review_url'))
-#     return '我已經幫你找到特定分店的review了,看你要用甚麼變數去接收'
-
-# @app.route("/shoppingCart",methods=['GET','POST'])
-# def shoppingCart():
-#     #return redirect(url_for('shoppingCart_url'))
-#     return'進入shoppingCart頁面'
-
-# @app.route("/shoppingstore",methods=['GET','POST'])
-# def shoppingstore():
-#     #return redirect(url_for('shoppingstore_url'))
-#     return'回到shoppingstore頁面'
 
 @app.route("/order",methods=['GET','POST'])
 def order():
