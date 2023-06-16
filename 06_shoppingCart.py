@@ -3,6 +3,8 @@ from flask import Flask
 from flask import request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
+from datetime import datetime
+
 
 # 匯入 model　中的　table
 from model import db, Buyer, Store, Review, Frequently_Used_Store, Leftover_History, Leftover_Product, Order, Order_Item 
@@ -32,27 +34,33 @@ except pymysql.Error as e:
 finally:
     connection.close()
 
-@app.route('/login/<action>', methods=['GET', 'POST'])
-def login(action):
-    # return "Logiiin"
-    # print("enter login")
+@app.route('/shoppingCart/<action>', methods=['GET', 'POST'])
+def shoppingCart(action):
     if request.method == 'POST':
-        # print("request.method == POST")
-        if action == 'buyer_login':
-            # return "Buyer Login"
-            # print("click buyer_button")
-            buyer_phone = request.form['buyer_phone']
-            return render_template('03_shoppingstore.html', phone_number = buyer_phone)
-        elif action == 'store_login':
-            # print("click store_button")
-            store_name = request.form['store_name']
-            # 09_...html
-            return render_template('11_seller_history.html', branch_name = store_name)
-        elif action == 'register':
-            # print("click register_button")
-            return render_template('02_register.html')
+        order_list = Order_Item.query.join(Order).join(Leftover_Product).filter(
+        Order_Item.order_number == Order.order_number,
+        Order_Item.product_code == Leftover_Product.product_code,
+        Order.order_status == 'Not Submit Yet').all()
+        
+        if action == 'submit_cart':
+            # renew item price
+            for item in order_list:
+                quantity_ordered = int(request.form.get(f"quantity_ordered_{item.order_number}"))
+                item_price = item.leftover_product.price * quantity_ordered
+                item.quantity_ordered = quantity_ordered
+                item.item_price = item_price
 
-    return render_template('01_login.html')
+            # renew status and time of order
+            order.order_status = 'Pending Order'
+            order.order_time = datetime.now()
+
+        elif action == 'clear_cart':
+            # clear order_item
+            for order in order_list:
+                order.order_item.clear()
+            
+    return render_template('06_shoppingCart.html')
+
 
 if __name__ =="__main__":
     with app.app_context():

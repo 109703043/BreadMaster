@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>購物車</title>
   <style>
@@ -7,54 +8,58 @@
       width: 100%;
       border-collapse: collapse;
     }
-    th, td {
+
+    th,
+    td {
       border: 1px solid black;
       padding: 8px;
     }
   </style>
 </head>
+
 <body>
 
-<h2>購物車</h2>
+  <h2>購物車</h2>
 
-<table>
-  <tr>
-    <th>商店名稱</th>
-    <th>產品代號</th>
-    <th>品名</th>
-    <th>單價</th>
-    <th>購買數量</th>
-  </tr>
-  <tr>
-    <td>商店A</td>
-    <td>A001</td>
-    <td>產品A</td>
-    <td>$10</td>
-    <td><input type="number" name="quantity" value="2"></td>
-  </tr>
-  <tr>
-    <td>商店B</td>
-    <td>B002</td>
-    <td>產品B</td>
-    <td>$20</td>
-    <td><input type="number" name="quantity" value="1"></td>
-  </tr>
-  <tr>
-    <td>商店C</td>
-    <td>C003</td>
-    <td>產品C</td>
-    <td>$15</td>
-    <td><input type="number" name="quantity" value="3"></td>
-  </tr>
-</table>
+  <table>
+    <thead>
+      <tr>
+        <th>商店名稱</th>
+        <th>產品代號</th>
+        <th>品名</th>
+        <th>單價</th>
+        <th>購買數量</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in order_list %}
+      <tr>
+        <td>{{ order_item.branch_name }}</td>
+        <td>{{ order_item.product_code }}</td>
+        <td>{{ leftover_product.product_name }}</td>
+        <td>{{ leftover_product.price }}</td>
+        <td>
+          <input type="number" name="quantity_ordered" value="{{ order_item.quantity_ordered }}" min="1" step="1">
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-<div class="clear-cart-button"> <p style="text-align: right;">
-  <button>清空購物車</button> </p>
-</div>
+  
+  <p style="text-align: right;">
+    <form action="/shoppingCart/clear_cart" method="POST">
+      <button>清空購物車</button>
+    </form>
+  </p>
+ 
+  <p style="text-align: center;">
+    <form action="/shoppingCart/submit_cart" method="POST">
+      <button style="font-weight: bold; font-size: 20px;">確認送出訂單</button>
+    </form>
+  </p>
 
-<div class="submit-button">  <p style="text-align: center;">
-  <button style="font-weight: bold; font-size: 20px;">確認送出訂單</button></p>
-</div>
 
 </body>
+
 </html>
