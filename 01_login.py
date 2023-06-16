@@ -50,8 +50,7 @@ def login(action):
         elif action == 'store_login':
             # print("click store_button")
             store_name = request.form['store_name']
-            # 09_...html
-            return render_template('11_seller_history.html', branch_name = store_name)
+            return render_template('09_storeLeftover.html', branch_name = store_name)
         elif action == 'register':
             # print("click register_button")
             return render_template('02_register.html')
