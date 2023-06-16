@@ -34,6 +34,10 @@ finally:
 
 from flask import request
 
+@app.route('/register', methods=['GET'])
+def render_register():
+    return render_template('02_register.html')
+
 @app.route('/register/<action>', methods=['GET', 'POST'])
 def register(action):
     # print("enter register")

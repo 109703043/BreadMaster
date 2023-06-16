@@ -32,6 +32,10 @@ except pymysql.Error as e:
 finally:
     connection.close()
 
+@app.route('/login', methods=['GET'])
+def render_login():
+    return render_template('01_login.html')
+
 @app.route('/login/<action>', methods=['GET', 'POST'])
 def login(action):
     # return "Logiiin"
