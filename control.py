@@ -303,6 +303,18 @@ def modify_review(action):
 def render_shoppingCart(phone_number):
     order = Order.query.filter_by(phone_number = phone_number, 
                                   order_status = 'Not Submit Yet').first()
+    if(order == None): # no order in cart
+        order_number = db.session.query(db.func.max(Order.order_number)).scalar()+1
+        new_order = Order(
+                        order_number= order_number,
+                        phone_number= phone_number,
+                        order_status = "Not Submit Yet",
+                        order_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    )
+        db.session.add(new_order)
+        db.session.commit()
+        order = Order.query.filter_by(phone_number = phone_number, 
+                                      order_status = 'Not Submit Yet').first()
     order_item = Order_Item.query.filter_by(order_number = order.order_number).all()
     order_item_info = [Leftover_Product.query.filter_by(branch_name = p.branch_name, 
                                                         product_code = p.product_code).first()
@@ -326,7 +338,7 @@ def shoppingCart(phone_number, action):
         if action == 'submit_cart':
             # renew item price
             for item in order_list:
-                quantity_ordered = request.form['quantity_ordered']
+                quantity_ordered = request.form[f'quantity_ordered_{item.branch_name}_{item.product_code}']
                 item_price = int(item.item_price) * int(quantity_ordered)
                 item.quantity_ordered = quantity_ordered
                 item.item_price = item_price

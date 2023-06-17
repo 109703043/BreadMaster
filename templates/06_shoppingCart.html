@@ -41,7 +41,7 @@
             <td>{{ order_item_info[i].product_name }}</td>
             <td>{{ order_item_info[i].price|int }}</td>
             <td>
-              <input type="number" name="quantity_ordered" value="{{ order_item[i].quantity_ordered }}" min="0" max="{{ order_item_info[i].quantity_in_stock}}" step="1">
+              <input type="number" name="quantity_ordered_{{ order_item_info[i].branch_name }}_{{ order_item_info[i].product_code }}" value="{{ order_item[i].quantity_ordered }}" min="0" max="{{ order_item_info[i].quantity_in_stock}}" step="1">
             </td>
           </tr>
           {% endfor %}
