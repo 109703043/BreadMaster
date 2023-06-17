@@ -19,6 +19,13 @@
     </style>
 </head>
 <body>
+    <ul>
+        <li><a href="{{ url_for('show_shoppingStore', phone_number = phone_number) }}">所有店家</a></li>
+        <li><a href="{{ url_for('show_buyer_orderOutline', phone_number = phone_number) }}">訂購紀錄</a></li>
+        <li><a href="{{ url_for('render_shoppingCart', phone_number = phone_number) }}">購物車</a></li>
+    </ul>
+    <hr>
+    
     <h1>訂單詳細資訊</h1>
     <!-- order outline -->
     <table>
@@ -52,7 +59,7 @@
             {% for i in range(order_item_len) %}
             <tr>
                 <td>
-                    <form action="/purchase/{{ phone_number }}/{{ order_item[i].branch_name }}">
+                    <form action="{{ url_for('purchase', phone_number = phone_number, branch_name = order_item[i].branch_name) }}">
                         <input type="submit" value="{{ order_item[i].branch_name }}"/>
                     </form>
                 </td>

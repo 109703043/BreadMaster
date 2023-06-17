@@ -5,6 +5,13 @@
        <title>在商店內選購物品</title>
     </head>
     <body>
+      <ul>
+          <li><a href="{{ url_for('show_shoppingStore', phone_number = phone_number) }}">所有店家</a></li>
+          <li><a href="{{ url_for('show_buyer_orderOutline', phone_number = phone_number) }}">訂購紀錄</a></li>
+          <li><a href="{{ url_for('render_shoppingCart', phone_number = phone_number) }}">購物車</a></li>
+      </ul>
+      <hr>
+      
      <h1>店家基本資訊</h1>
      <p>店名: {{store.branch_name}}</p>
      <p>電話: {{store.phone_number}}</p>
@@ -23,33 +30,33 @@
       }
   </style>
   <div class="button-container">
-     <form action="/addToFavorites" method="post">
+     <form action="{{ url_for('addToFavorites') }}" method="post">
         <input type="hidden" name="phone_number" value="{{ phone_number }}">
         <input type="hidden" name="branch_name" value="{{ branch_name }}">
         <button id="addToFavoritesBtn">加入常用店家</button>
       </form>
 
-      <form action="/removeFromFavorites" method="post">
+      <form action="{{ url_for('removeFromFavorites') }}" method="post">
         <input type="hidden" name="phone_number" value="{{ phone_number }}">
         <input type="hidden" name="branch_name" value="{{ branch_name }}">
         <button id="removeFromFavoritesBtn">刪除常用店家</button>
       </form>
       
-      <form action="/reviews/{{ phone_number }}/{{ branch_name }}">
+      <form action="{{ url_for('show_reviews', phone_number = phone_number, branch_name = branch_name) }}">
         <button id="reviewsBtn">查看店家評論</button>
       </form>
      
-     <form action="/{{ phone_number }}/shoppingCart">
+     <form action="{{ url_for('render_shoppingCart', phone_number = phone_number) }}">
       <button id="shoppingCartBtn">查看購物車</button>
      </form>
 
      <!-- <form action="/shoppingstore" method="get"> -->
-     <form action="/{{ phone_number }}/shoppingStore">
-      <button id="shoppingstoreBtn">回到選購特定店家</button>
+     <form action="{{ url_for('show_shoppingStore', phone_number = phone_number) }}">
+      <button id="shoppingstoreBtn">回到店家一覽</button>
      </form>   
    </div>  
      <hr/>
-     <form method="POST" action="/order">
+     <form method="POST" action="{{ url_for('order') }}">
       {% if leftover_products %}
         {% for leftover_product in leftover_products %}
           <div>

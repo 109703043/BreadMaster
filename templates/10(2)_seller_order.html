@@ -78,6 +78,14 @@
 </head>
 
 <body>
+    <ul>
+        <li><a href="{{ url_for('show_leftoverProduct', branch_name = branch_name) }}">商品列表</a></li>
+        <li><a href="{{ url_for('show_branch_orderOutline', branch_name = branch_name) }}">進行中訂單</a></li>
+        <li><a href="{{ url_for('show_branch_history_orders', branch_name = branch_name) }}">歷史訂單</a></li>
+        <li><a href="{{ url_for('show_report', branch_name = branch_name )}}">產生報表</a></li>
+    </ul>
+    <hr>
+    
     <h1>訂單詳細資訊</h1>
     <!-- order outline -->
     <table>
@@ -119,14 +127,14 @@
     <br>
     <!-- update order status buttons -->
     <div class="buttons-container">
-        <form method="POST" action="/update_order_status/{{ order.order_number }}/accept">
+        <form method="POST" action="{{ url_for('accept_order', branch_name = branch_name, order_number = order.order_number) }}">
             {% if order.order_status == 'Pending Order' %}
             <button type="submit">接受訂單</button>
             {% else %}
             <button type="submit" disabled>接受訂單</button>
             {% endif %}
         </form>
-        <form method="POST" action="/update_order_status/{{ order.order_number }}/complete">
+        <form method="POST" action="{{ url_for('complete_order', branch_name = branch_name, order_number = order.order_number) }}">
             {% if order.order_status == 'Order Accepted' %}
             <button type="submit">完成訂單</button>
             {% else %}

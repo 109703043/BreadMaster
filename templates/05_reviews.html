@@ -4,6 +4,13 @@
     <title>店家資訊</title>
 </head>
 <body>
+    <ul>
+        <li><a href="{{ url_for('show_shoppingStore', phone_number = phone_number) }}">所有店家</a></li>
+        <li><a href="{{ url_for('show_buyer_orderOutline', phone_number = phone_number) }}">訂購紀錄</a></li>
+        <li><a href="{{ url_for('render_shoppingCart', phone_number = phone_number) }}">購物車</a></li>
+    </ul>
+    <hr>
+    
     <h1>{{ store.branch_name }}店</h1>
     <p>電話：{{ store.phone_number }}</p>
     <p>營業時間：{{ store.business_hours }}</p>
@@ -13,13 +20,13 @@
     {% set branch_name = store.branch_name %}
 
     {% if is_favorite %}
-        <form method="POST" action="/reviews/delete_favorite">
+        <form method="POST" action="{{ url_for('modify_review', action = 'delete_favorite') }}">
             <input type="hidden" name="phone_number" value="{{ phone_number }}">
             <input type="hidden" name="branch_name" value="{{ branch_name }}">
             <button type="submit" id="remove-favorite-btn">從常用店家刪除</button>
         </form>
     {% else %}
-        <form method="POST" action="/reviews/add_favorite">
+        <form method="POST" action="{{ url_for('modify_review', action = 'add_favorite') }}">
             <input type="hidden" name="phone_number" value="{{ phone_number }}">
             <input type="hidden" name="branch_name" value="{{ branch_name }}">
             <button type="submit" id="add-favorite-btn">加入常用店家</button>
@@ -46,7 +53,7 @@
         <p>尚無評論</p>
     {% endif %}
 
-    <form method="POST" action="/reviews/modify_review"> 
+    <form method="POST" action="{{ url_for('modify_review', action = 'modify_review') }}"> 
         <h3>我的評論:</h3>
         <p>Score: 
             <select name="my_score">

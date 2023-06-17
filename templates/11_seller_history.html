@@ -27,6 +27,14 @@
 </head>
 
 <body>
+    <ul>
+        <li><a href="{{ url_for('show_leftoverProduct', branch_name = branch_name) }}">商品列表</a></li>
+        <li><a href="{{ url_for('show_branch_orderOutline', branch_name = branch_name) }}">進行中訂單</a></li>
+        <li><a href="{{ url_for('show_branch_history_orders', branch_name = branch_name) }}">歷史訂單</a></li>
+        <li><a href="{{ url_for('show_report', branch_name = branch_name )}}">產生報表</a></li>
+    </ul>
+    <hr>
+    
     <h1>歷史訂單</h1>
 
     <table>
@@ -44,7 +52,11 @@
         <tbody>
             {% for order_item, order, buyer_name in merged_data %}
             <tr>
-                <td>{{ order.order_number }}</td>
+                <td>
+                    <form action="{{ url_for('show_seller_orderDetail', branch_name = branch_name, order_number = order.order_number) }}">
+                        <input type="submit" value="{{ order.order_number }}"/>
+                    </form>
+                </td>
                 <td>{{ order.order_time }}</td>
                 <td>{{ order.phone_number }}</td>
                 <td>{{ buyer_name }}</td>

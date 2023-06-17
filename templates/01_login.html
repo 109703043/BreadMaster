@@ -8,7 +8,7 @@
 <body>
     <h2 style="text-align: center;">&nbsp;</h2>
     <h2 style="text-align: center;">買家登入</h2>
-    <form method="POST" action="/login/buyer_login">
+    <form method="POST" action="{{ url_for('login', action = 'buyer_login') }}">
         <p style="text-align: center;">
             手機號碼：<input name="buyer_phone" type="text" placeholder="請輸入手機號碼" />&nbsp;
             <button type="submit" id="buyer-login-btn">確認</button>
@@ -16,16 +16,16 @@
     </form>
     <p style="text-align: center;">------ or ------</p>
     <h2 style="text-align: center;">賣家登入</h2>
-    <form method="POST" action="/login/store_login">
+    <form method="POST" action="{{ url_for('login', action = 'store_login') }}">
         <p style="text-align: center;">
             店名：<input name="seller_store" type="text" placeholder="請輸入店名" />&nbsp; &nbsp; &nbsp;&nbsp;
             <button type="submit" id="buyer-login-btn">確認</button>
         </p>
     </form>
-    <form method="POST" action="/login/register">
+    <form action="{{ url_for('render_register') }}">
         <p style="text-align: center;">&nbsp;</p>
         <h4 style="text-align: center;">尚未註冊？&nbsp;
-        <button type="submit" name="register_button" value="register_submit">註冊</button></h4>
+        <button>註冊</button></h4>
     </form>
 </body>
 

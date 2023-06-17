@@ -2,6 +2,14 @@
 <html>
 
 <head>
+    <ul>
+        <li><a href="{{ url_for('show_leftoverProduct', branch_name = branch_name) }}">商品列表</a></li>
+        <li><a href="{{ url_for('show_branch_orderOutline', branch_name = branch_name) }}">進行中訂單</a></li>
+        <li><a href="{{ url_for('show_branch_history_orders', branch_name = branch_name) }}">歷史訂單</a></li>
+        <li><a href="{{ url_for('show_report', branch_name = branch_name )}}">產生報表</a></li>
+    </ul>
+    <hr>
+
     <title>店家管理上架中剩食/關店</title>
     <style>
         table {
@@ -23,8 +31,8 @@
 </head>
 
 <body>
-    <h2></h2>
-    <form action="/storeLeftover" method="post">
+    <h2>{{ branch_name }}</h2>
+    <!-- <form action="/storeLeftover" method="post">
         <label for="branch_name" style="font-size: 20px;">分店名稱:</label>
         <select name="branch_name" id="branch_name" style="font-size: 16px;">
             <option value="Daan Store">Daan Store</option>
@@ -35,15 +43,14 @@
             <option value="Shinkuchan Store">Shinkuchan Store</option>
             <option value="Nandu Store">Nandu Store</option>
             <option value="Zhongxing Store">Zhongxing Store</option>
-            <!-- Add more options as needed -->
         </select>
         <input type="submit" value="查詢">
-    </form>
-    <form action="/closeStore" method="post">
+    </form> -->
+    <form action="{{ url_for('close_store') }}" method="post">
         <input type="hidden" name="branch_name" value="{{ branch_name }}">
         <input type="submit" value="關店">
         <span style="font-size: 13px; color: rgb(90, 90, 90);">(將報銷所有上架中剩食移至剩食歷史紀錄、將保存期限延後一日作為明日開店準備。如欲關店請<strong
-                style="font-size: 16px; color: black;">按完查詢後直接按下關店</strong>)</span>
+                style="font-size: 16px; color: black;">直接按下關店</strong>)</span>
     </form>
     <br><br>
 
@@ -72,10 +79,10 @@
                 <td style="font-size: 15px;">{{ leftover_Product.price }}</td>
                 <td style="font-size: 15px;">{{ leftover_Product.product_description }}</td>
                 <td>
-                    <form action="/updateQuantity" method="post">
+                    <form action="{{ url_for('update_quantity') }}" method="post">
                         <input type="hidden" name="branch_name" value="{{ leftover_Product.branch_name }}">
                         <input type="hidden" name="product_code" value="{{ leftover_Product.product_code }}">
-                        <input type="number" name="new_quantity" min="0"
+                        <input type="number" name="new_quantity_{{ leftover_Product.product_code }}" min="0"
                             value="{{ leftover_Product.quantity_in_stock }}">
                         <input type="submit" value="修改">
                     </form>

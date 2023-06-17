@@ -58,17 +58,15 @@ def login(action):
             store_name = request.form['seller_store']
             store = Store.query.filter_by(branch_name = store_name).first()
             if(store != None):
-                return redirect(url_for('show_branch_orderOutline', branch_name = store_name))
+                return redirect(url_for('show_leftoverProduct', branch_name = store_name))
             else:
                 return "no bruh store doesn't exist"
-        elif action == 'register':
-            return redirect(url_for('render_register'))
     return redirect(url_for('render_login'))
 
 
 
 ### 02 註冊 http://127.0.0.1:5000/register
-@app.route('/register', methods=['GET'])
+@app.route('/register')
 def render_register():
     return render_template('02_register.html')
 
@@ -254,7 +252,7 @@ def show_reviews(phone_number,branch_name):
         my_score = 0
         my_content = ''
     return render_template('05_reviews.html',buyer = buyer, store = branch, is_favorite = is_favorite
-                           , reviews = reviews, my_score=my_score, my_content=my_content)
+                           , reviews = reviews, my_score=my_score, my_content=my_content, phone_number = phone_number)
 
 @app.route('/reviews/<action>', methods=['POST', 'GET']) #加入接收的參數
 def modify_review(action):
@@ -339,22 +337,26 @@ def shoppingCart(phone_number, action):
         Order.order_status == 'Not Submit Yet').all()
         
         if action == 'submit_cart':
-            # renew item price
-            for item in order_list:
-                quantity_ordered = request.form[f'quantity_ordered_{item.branch_name}_{item.product_code}']
-                item_price = int(item.item_price) * int(quantity_ordered)
-                item.quantity_ordered = quantity_ordered
-                item.item_price = item_price
+            if(order_list != []):
+                # renew item price
+                for item in order_list:
+                    quantity_ordered = request.form[f'quantity_ordered_{item.branch_name}_{item.product_code}']
+                    item_price = int(item.item_price) * int(quantity_ordered)
+                    item.quantity_ordered = quantity_ordered
+                    item.item_price = item_price
 
-            # renew status and time of order
-            order.order_status = 'Pending Order'
-            order.order_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                # renew status and time of order
+                order.order_status = 'Pending Order'
+                order.order_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            db.session.commit()
+                db.session.commit()
 
-            return redirect(url_for('show_buyer_orderDetail', 
-                                    phone_number = phone_number, 
-                                    order_number = order.order_number))
+                return redirect(url_for('show_buyer_orderDetail', 
+                                        phone_number = phone_number, 
+                                        order_number = order.order_number))
+            else:
+                return redirect(url_for('render_shoppingCart', 
+                                        phone_number = phone_number))
 
         elif action == 'clear_cart':
             # clear order_item
@@ -372,7 +374,8 @@ def shoppingCart(phone_number, action):
 @app.route('/buyerOrderOutline/<phone_number>') # phone_number of the buyer
 def show_buyer_orderOutline(phone_number):
 
-    order_list = Order.query.filter_by(phone_number = phone_number)
+    order_list = Order.query.filter(Order.phone_number == phone_number, 
+                                    Order.order_status != 'Not Submit Yet')
 
     return render_template('07_orderOutline.html',
                            order_list = order_list, 
@@ -408,29 +411,19 @@ def show_buyer_orderDetail(phone_number, order_number):
 
 
 
-### 09 店家: 上架中商品 http://127.0.0.1:5000/storeLeftover
+### 09 店家: 上架中商品 http://127.0.0.1:5000/Daan%20Store/storeLeftover
 #查詢該分店的上架中剩食
-@app.route('/storeLeftover', methods=['GET', 'POST'])
-def show_leftoverHistory():
-    if request.method == 'POST':
-        branch_name = request.form['branch_name']
-        leftover_Product_list = Leftover_Product.query.filter_by(branch_name=branch_name)
-        return render_template('09_storeLeftover.html', leftover_Product_list=leftover_Product_list, branch_name=branch_name)
-
-    branch_name = request.args.get('branch_name')
-    if branch_name:
-        leftover_Product_list = Leftover_Product.query.filter_by(branch_name=branch_name)
-    else:
-        leftover_Product_list = []
-
-    return render_template('09_storeLeftover.html', leftover_Product_list=leftover_Product_list)
+@app.route('/<branch_name>/storeLeftover')
+def show_leftoverProduct(branch_name):
+    leftover_Product_list = Leftover_Product.query.filter_by(branch_name=branch_name)
+    return render_template('09_storeLeftover.html', leftover_Product_list=leftover_Product_list, branch_name=branch_name)
 
 #修改上架中剩食數量
 @app.route('/updateQuantity', methods=['POST'])
 def update_quantity():
     branch_name = request.form['branch_name']
     product_code = request.form['product_code']
-    new_quantity = int(request.form['new_quantity'])
+    new_quantity = int(request.form[f'new_quantity_{product_code}'])
 
     # 查詢要修改的紀錄
     leftover_product = Leftover_Product.query.filter_by(branch_name=branch_name, product_code=product_code).first()
@@ -439,7 +432,7 @@ def update_quantity():
         db.session.commit()
         
         params = urlencode({'branch_name': branch_name})  # 將分店名稱設為編碼參數
-        redirect_url = '/storeLeftover?' + params  # 按下修改後還可以顯示該分店的上架中剩食
+        redirect_url = f'/{branch_name}/storeLeftover?' + params  # 按下修改後還可以顯示該分店的上架中剩食
         return redirect(redirect_url)
     else:
         return "紀錄不存在"
@@ -493,13 +486,13 @@ def close_store():
     db.session.commit()
 
     params = urlencode({'branch_name': branch_name})  # 將分店名稱設為編碼參數
-    redirect_url = '/storeLeftover?' + params  # 按下關店之後還可以顯示該分店的上架中剩食(就會看到數量都是0、保存期限被加了一天)
+    redirect_url = f'/{branch_name}/storeLeftover?' + params  # 按下關店之後還可以顯示該分店的上架中剩食(就會看到數量都是0、保存期限被加了一天)
     return redirect(redirect_url)
 
 
 
 ### 10-1 店家: 訂單一覽 http://127.0.0.1:5000/branchOrderOutline/Daan%20Store
-@app.route('/branchOrderOutline/<branch_name>') # phone_number of the buyer
+@app.route('/<branch_name>/branchOrderOutline') # phone_number of the buyer
 def show_branch_orderOutline(branch_name):
 
     # 根據分店名稱 (branch_name) 從 Order_Item 表中取得該店家的所有訂單項目
@@ -509,16 +502,18 @@ def show_branch_orderOutline(branch_name):
     order_numbers = [order_item.order_number for order_item in order_items]
 
     # 根據訂單編號從 Order 表中取得訂單資訊
-    order_list = Order.query.filter(Order.order_number.in_(order_numbers)).all()
+    order_list = Order.query.filter(Order.order_number.in_(order_numbers), 
+                                    Order.order_status != 'Completed' or Order.order_status != 'Cancelled').all()
 
     return render_template('10(1)_seller_order.html',
-                           order_list = order_list)
+                           order_list = order_list, 
+                           branch_name = branch_name)
 
 ### 10-2 店家: 訂單詳細  pending   http://127.0.0.1:5000/branchOrderDetail/10018
 ###                     accepted  http://127.0.0.1:5000/branchOrderDetail/10016
 ###                     completed http://127.0.0.1:5000/branchOrderDetail/10026
-@app.route('/branchOrderDetail/<order_number>') # order_number of the order
-def show_seller_orderDetail(order_number):
+@app.route('/<branch_name>/branchOrderDetail/<order_number>') # order_number of the order
+def show_seller_orderDetail(branch_name, order_number):
 
     order = Order.query.filter_by(order_number = order_number).first()
 
@@ -539,24 +534,38 @@ def show_seller_orderDetail(order_number):
                            order_item = order_item, 
                            product_name = product_name, 
                            price_sum = price_sum, 
-                           order_item_len = order_item.count())
+                           order_item_len = order_item.count(), 
+                           branch_name = branch_name)
 
-@app.route('/update_order_status/<order_number>/accept', methods=['POST'])
-def accept_order(order_number):
+@app.route('/<branch_name>/<order_number>/update_order_status/accept', methods=['POST'])
+def accept_order(branch_name, order_number):
     order = Order.query.filter_by(order_number=order_number).first()
     if order.order_status == 'Pending Order':
         order.order_status = 'Order Accepted'
         db.session.commit()
-        return redirect(url_for('show_seller_orderDetail', order_number=order_number))
+
+        # update the quantity in stock
+        order_item = Order_Item.query.filter_by(order_number = order_number)
+        for p in order_item:
+            product = Leftover_Product.query.filter_by(branch_name = p.branch_name, 
+                                                       product_code = p.product_code).first()
+            product.quantity_in_stock -= p.quantity_ordered
+            db.session.commit()
+
+        return redirect(url_for('show_seller_orderDetail', 
+                                branch_name = branch_name, 
+                                order_number=order_number))
     return {'success': False}
 
-@app.route('/update_order_status/<order_number>/complete', methods=['POST'])
-def complete_order(order_number):
+@app.route('/<branch_name>/<order_number>/update_order_status/complete', methods=['POST'])
+def complete_order(branch_name, order_number):
     order = Order.query.filter_by(order_number=order_number).first()
     if order.order_status == 'Order Accepted':
         order.order_status = 'Completed'
         db.session.commit()
-        return redirect(url_for('show_seller_orderDetail', order_number=order_number))
+        return redirect(url_for('show_seller_orderDetail', 
+                                branch_name = branch_name, 
+                                order_number=order_number))
     return {'success': False}
 
 
@@ -589,21 +598,26 @@ def show_branch_history_orders(branch_name):
             buyer_name = buyer_names.get(order.phone_number)
             merged_data.append((order_item, order, buyer_name))
 
-    return render_template('11_seller_history.html', merged_data = merged_data)
+    return render_template('11_seller_history.html', 
+                           merged_data = merged_data, 
+                           branch_name = branch_name)
 
 
 
-### 12 店家: 報表 
-@app.route('/storeReport', methods=['GET', 'POST']) # phone_number of the buyer
-def show_report():
+### 12 店家: 報表 http://127.0.0.1:5000/Daan%20Store/storeReport
+@app.route('/<branch_name>/storeReport', methods=['GET', 'POST']) # phone_number of the buyer
+def show_report(branch_name):
     if request.method == 'POST':
-        branch_name = request.form['branch_name']
         datetime = request.form['datetime']
         leftover_history_list = Leftover_History.query.filter_by(branch_name=branch_name)\
                                                       .filter(Leftover_History.removal_time == datetime)
-        return render_template('12_report.html', leftover_history_list=leftover_history_list)
+        return render_template('12_report.html', 
+                               leftover_history_list=leftover_history_list, 
+                               branch_name = branch_name)
 
-    return render_template('12_report.html')
+    return render_template('12_report.html', 
+                           leftover_history_list = [], 
+                           branch_name = branch_name)
 
 
 
