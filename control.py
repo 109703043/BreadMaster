@@ -4,7 +4,10 @@ from flask import request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
 
-from datetime import datetime
+from sqlalchemy import update
+from urllib.parse import urlencode
+
+from datetime import datetime, timedelta, time
 
 from model import db, Buyer, Store, Order, Leftover_Product, Order_Item, Leftover_History, Review, Frequently_Used_Store  #, tables
 
@@ -298,7 +301,7 @@ def modify_review(action):
 
 
 
-### 06 買家: 購物車 
+### 06 買家: 購物車 http://127.0.0.1:5000/0912345678/shoppingCart
 @app.route('/<phone_number>/shoppingCart')
 def render_shoppingCart(phone_number):
     order = Order.query.filter_by(phone_number = phone_number, 
@@ -405,6 +408,96 @@ def show_buyer_orderDetail(phone_number, order_number):
 
 
 
+### 09 店家: 上架中商品 http://127.0.0.1:5000/storeLeftover
+#查詢該分店的上架中剩食
+@app.route('/storeLeftover', methods=['GET', 'POST'])
+def show_leftoverHistory():
+    if request.method == 'POST':
+        branch_name = request.form['branch_name']
+        leftover_Product_list = Leftover_Product.query.filter_by(branch_name=branch_name)
+        return render_template('09_storeLeftover.html', leftover_Product_list=leftover_Product_list, branch_name=branch_name)
+
+    branch_name = request.args.get('branch_name')
+    if branch_name:
+        leftover_Product_list = Leftover_Product.query.filter_by(branch_name=branch_name)
+    else:
+        leftover_Product_list = []
+
+    return render_template('09_storeLeftover.html', leftover_Product_list=leftover_Product_list)
+
+#修改上架中剩食數量
+@app.route('/updateQuantity', methods=['POST'])
+def update_quantity():
+    branch_name = request.form['branch_name']
+    product_code = request.form['product_code']
+    new_quantity = int(request.form['new_quantity'])
+
+    # 查詢要修改的紀錄
+    leftover_product = Leftover_Product.query.filter_by(branch_name=branch_name, product_code=product_code).first()
+    if leftover_product:
+        leftover_product.quantity_in_stock = new_quantity
+        db.session.commit()
+        
+        params = urlencode({'branch_name': branch_name})  # 將分店名稱設為編碼參數
+        redirect_url = '/storeLeftover?' + params  # 按下修改後還可以顯示該分店的上架中剩食
+        return redirect(redirect_url)
+    else:
+        return "紀錄不存在"
+
+#關店
+@app.route('/closeStore', methods=['POST'])
+def close_store():
+    branch_name = request.form['branch_name']
+
+    # 查询该分店的所有记录
+    leftover_products = Leftover_Product.query.filter_by(branch_name=branch_name).all()
+    for product in leftover_products:
+        
+        b = product.branch_name
+        p = product.product_code
+        expirationdate = product.expiration_date  # 原始的保存期限
+        r = None  # 預設為 None，稍後會根據 branch_name 的不同進行設定
+        q = product.quantity_in_stock
+
+        if b == 'Daan Store':
+            r = datetime.combine(expirationdate, time(hour=22))  # 設置removal_time的時分秒為 22:00:00
+        elif b == 'Xinyi Store':
+            r = datetime.combine(expirationdate, time(hour=20))
+        elif b == 'Zhongshan Store':
+            r = datetime.combine(expirationdate, time(hour=19))
+        elif b == 'Zhongxiao Store':
+            r = datetime.combine(expirationdate, time(hour=21))
+        elif b == 'Songshan Store':
+            r = datetime.combine(expirationdate, time(hour=22))
+        elif b == 'Shinkuchan Store':
+            r = datetime.combine(expirationdate, time(hour=21))
+        elif b == 'Nandu Store':
+            r = datetime.combine(expirationdate, time(hour=20))
+        elif b == 'Zhongxing Store':
+            r = datetime.combine(expirationdate, time(hour=19))
+             
+        q = product.quantity_in_stock
+
+        leftoverHistory = Leftover_History(branch_name = b,product_code = p,removal_time = r,quantity_removed = q)
+        db.session.add(leftoverHistory)
+        
+        product.expiration_date += timedelta(days=1)  #要關店了，把保存期限設為隔一天，這樣明天開店就直接新增上架數量就好
+        product.quantity_in_stock = 0 #要關店報銷了，把數量清0
+    
+    #要關店了，檢查有無尚未完成的訂單，全部改為'Cancelled'
+    update_query = update(Order).where(
+        (Order.order_status == 'Pending Order') | (Order.order_status == 'Order Accepted')| (Order.order_status == 'Not Submit Yet')
+    ).values(order_status='Cancelled')
+    db.session.execute(update_query)
+
+    db.session.commit()
+
+    params = urlencode({'branch_name': branch_name})  # 將分店名稱設為編碼參數
+    redirect_url = '/storeLeftover?' + params  # 按下關店之後還可以顯示該分店的上架中剩食(就會看到數量都是0、保存期限被加了一天)
+    return redirect(redirect_url)
+
+
+
 ### 10-1 店家: 訂單一覽 http://127.0.0.1:5000/branchOrderOutline/Daan%20Store
 @app.route('/branchOrderOutline/<branch_name>') # phone_number of the buyer
 def show_branch_orderOutline(branch_name):
@@ -497,6 +590,20 @@ def show_branch_history_orders(branch_name):
             merged_data.append((order_item, order, buyer_name))
 
     return render_template('11_seller_history.html', merged_data = merged_data)
+
+
+
+### 12 店家: 報表 
+@app.route('/storeReport', methods=['GET', 'POST']) # phone_number of the buyer
+def show_report():
+    if request.method == 'POST':
+        branch_name = request.form['branch_name']
+        datetime = request.form['datetime']
+        leftover_history_list = Leftover_History.query.filter_by(branch_name=branch_name)\
+                                                      .filter(Leftover_History.removal_time == datetime)
+        return render_template('12_report.html', leftover_history_list=leftover_history_list)
+
+    return render_template('12_report.html')
 
 
 
