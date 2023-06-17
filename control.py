@@ -218,14 +218,12 @@ def order():
                         order_number = order_number,
                         branch_name  = branch_name,
                         product_code  = selected_leftover_product.product_code,
-                        item_price  = selected_leftover_product.quantity_in_stock*selected_leftover_product.price,
+                        item_price  = selected_leftover_product.price,
                         quantity_ordered = 1
                     ) 
                     db.session.add(new_order_item)
                 db.session.commit()
 
-                selected_leftover_product.quantity_in_stock -= 1
-                db.session.commit()
        return redirect(url_for('purchase', phone_number = phone_number, branch_name = branch_name))
     else :    
        return redirect(url_for('purchase', phone_number = phone_number, branch_name = branch_name))
@@ -234,7 +232,7 @@ def order():
 
 ### 05 買家: 店家評價 http://127.0.0.1:5000/reviews/0912445566/Daan%20Store
 # 前一頁按了一個btn，傳phone_number和branch_name進來
-@app.route('/reviews/<phone_number>/<branch_name>', methods=['GET','POST'])
+@app.route('/reviews/<phone_number>/<branch_name>')
 def show_reviews(phone_number,branch_name):
 
     buyer = Buyer.query.filter_by(phone_number = phone_number).first()
@@ -297,6 +295,61 @@ def modify_review(action):
 
     db.session.commit()
     return redirect(url_for('show_reviews', phone_number=phone_number, branch_name=branch_name))
+
+
+
+### 06 買家: 購物車 
+@app.route('/<phone_number>/shoppingCart')
+def render_shoppingCart(phone_number):
+    order = Order.query.filter_by(phone_number = phone_number, 
+                                  order_status = 'Not Submit Yet').first()
+    order_item = Order_Item.query.filter_by(order_number = order.order_number).all()
+    order_item_info = [Leftover_Product.query.filter_by(branch_name = p.branch_name, 
+                                                        product_code = p.product_code).first()
+                       for p in order_item]
+    return render_template('06_shoppingCart.html', 
+                           phone_number = phone_number, 
+                           order_item = order_item, 
+                           order_item_info = order_item_info, 
+                           len = len(order_item))
+
+@app.route('/<phone_number>/shoppingCart/<action>', methods=['GET', 'POST'])
+def shoppingCart(phone_number, action):
+    order = Order.query.filter_by(phone_number = phone_number, 
+                                  order_status = 'Not Submit Yet').first()
+    if request.method == 'POST':
+        order_list = Order_Item.query.join(Order).join(Leftover_Product).filter(
+        Order_Item.order_number == Order.order_number,
+        Order_Item.product_code == Leftover_Product.product_code,
+        Order.order_status == 'Not Submit Yet').all()
+        
+        if action == 'submit_cart':
+            # renew item price
+            for item in order_list:
+                quantity_ordered = request.form['quantity_ordered']
+                item_price = int(item.item_price) * int(quantity_ordered)
+                item.quantity_ordered = quantity_ordered
+                item.item_price = item_price
+
+            # renew status and time of order
+            order.order_status = 'Pending Order'
+            order.order_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            db.session.commit()
+
+            return redirect(url_for('show_buyer_orderDetail', 
+                                    phone_number = phone_number, 
+                                    order_number = order.order_number))
+
+        elif action == 'clear_cart':
+            # clear order_item
+            for order in order_list:
+                db.session.delete(order)
+                
+            db.session.commit()
+
+            return redirect(url_for('render_shoppingCart', 
+                                    phone_number = phone_number))
 
 
 

@@ -21,43 +21,42 @@
 
   <h2>購物車</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>商店名稱</th>
-        <th>產品代號</th>
-        <th>品名</th>
-        <th>單價</th>
-        <th>購買數量</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for order in order_list %}
-      <tr>
-        <td>{{ order_item.branch_name }}</td>
-        <td>{{ order_item.product_code }}</td>
-        <td>{{ leftover_product.product_name }}</td>
-        <td>{{ leftover_product.price }}</td>
-        <td>
-          <input type="number" name="quantity_ordered" value="{{ order_item.quantity_ordered }}" min="1" step="1">
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <p style="text-align: center;">
+    <form action="/{{ phone_number }}/shoppingCart/submit_cart" method="POST">
+      <table>
+        <thead>
+          <tr>
+            <th>商店名稱</th>
+            <th>產品代號</th>
+            <th>品名</th>
+            <th>單價</th>
+            <th>購買數量</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in range(len) %}
+          <tr>
+            <td>{{ order_item_info[i].branch_name }}</td>
+            <td>{{ order_item_info[i].product_code }}</td>
+            <td>{{ order_item_info[i].product_name }}</td>
+            <td>{{ order_item_info[i].price|int }}</td>
+            <td>
+              <input type="number" name="quantity_ordered" value="{{ order_item[i].quantity_ordered }}" min="0" max="{{ order_item_info[i].quantity_in_stock}}" step="1">
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button style="font-weight: bold; font-size: 20px;">確認送出訂單</button>
+    </form>
+  </p>
 
-  
   <p style="text-align: right;">
-    <form action="/shoppingCart/clear_cart" method="POST">
+    <form action="/{{ phone_number }}/shoppingCart/clear_cart" method="POST">
       <button>清空購物車</button>
     </form>
   </p>
  
-  <p style="text-align: center;">
-    <form action="/shoppingCart/submit_cart" method="POST">
-      <button style="font-weight: bold; font-size: 20px;">確認送出訂單</button>
-    </form>
-  </p>
 
 
 </body>

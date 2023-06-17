@@ -35,14 +35,11 @@
         <button id="removeFromFavoritesBtn">刪除常用店家</button>
       </form>
       
-      <form action="/reviews/{{ phone_number }}/{{ branch_name }}" method="get">
-        <input type="hidden" name="phone_number" value="{{ phone_number }}">
-        <input type="hidden" name="branch_name" value="{{ branch_name }}">
+      <form action="/reviews/{{ phone_number }}/{{ branch_name }}">
         <button id="reviewsBtn">查看店家評論</button>
       </form>
      
-     <form action="/shoppingCart" method="get">
-      <input type="hidden" name="phone_number" value="{{ phone_number }}">
+     <form action="/{{ phone_number }}/shoppingCart">
       <button id="shoppingCartBtn">查看購物車</button>
      </form>
 
