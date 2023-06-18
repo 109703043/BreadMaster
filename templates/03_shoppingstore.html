@@ -2,6 +2,20 @@
 <html>
 <head>
     <title>選定特定店家</title>
+    <style>
+        table{
+            width: 100%;
+            text-align: center;
+            border-collapse: collapse;
+        }
+        th, td{
+            border: 1px solid black;
+            padding: 8px;
+        }
+        th{
+            background-color: #EEEEEE;
+        }
+    </style>
 </head>
 <body>
     <ul>
@@ -12,23 +26,59 @@
     <hr>
     
     <h1>常用店家</h1>
-    <ul>
-        {% for store in frequently_used_stores %}
-        <li>
-            {{ store.branch_name }} - 電話：{{ store.phone_number }}，營業時間：{{ store.business_hours }}，地址：{{ store.address }}
-            <a href="{{ url_for('purchase', phone_number = phone_number, branch_name = store.branch_name) }}">查看商品</a>
-        </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>分店</th>
+                <th>電話</th>
+                <th>營業時間</th>
+                <th>地址</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for store in frequently_used_stores %}
+            <tr>
+                <td>{{ store.branch_name }}</td>
+                <td>{{ store.phone_number }}</td>
+                <td>{{ store.business_hours }}</td>
+                <td>{{ store.address }}</td>
+                <td>
+                    <a href="{{ url_for('purchase', phone_number = phone_number, branch_name = store.branch_name) }}">
+                        查看商品
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <h1>所有店家</h1>
-    <ul>
-        {% for store in all_stores %}
-            <li>
-                {{ store.branch_name }} - 電話：{{ store.phone_number }}，營業時間：{{ store.business_hours }}，地址：{{ store.address }}
-                <a href="{{ url_for('purchase', phone_number = phone_number, branch_name = store.branch_name) }}">查看商品</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>分店</th>
+                <th>電話</th>
+                <th>營業時間</th>
+                <th>地址</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for store in all_stores %}
+            <tr>
+                <td>{{ store.branch_name }}</td>
+                <td>{{ store.phone_number }}</td>
+                <td>{{ store.business_hours }}</td>
+                <td>{{ store.address }}</td>
+                <td>
+                    <a href="{{ url_for('purchase', phone_number = phone_number, branch_name = store.branch_name) }}">
+                        查看商品
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
