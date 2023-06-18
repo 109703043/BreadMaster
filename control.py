@@ -517,7 +517,7 @@ def close_store():
 
 
 
-### 10-1 店家: 訂單一覽 http://127.0.0.1:5000/branchOrderOutline/Daan%20Store
+### 10-1 店家: 進行中訂單(一覽) http://127.0.0.1:5000/Nandu%20Store/branchOrderOutline
 @app.route('/<branch_name>/branchOrderOutline') # phone_number of the buyer
 def show_branch_orderOutline(branch_name):
 
@@ -529,15 +529,16 @@ def show_branch_orderOutline(branch_name):
 
     # 根據訂單編號從 Order 表中取得訂單資訊
     order_list = Order.query.filter(Order.order_number.in_(order_numbers), 
-                                    Order.order_status != 'Completed' or Order.order_status != 'Cancelled').all()
+                                    Order.order_status != 'Completed',
+                                    Order.order_status != 'Cancelled').all()
 
     return render_template('10(1)_seller_order.html',
                            order_list = order_list, 
                            branch_name = branch_name)
 
-### 10-2 店家: 訂單詳細  pending   http://127.0.0.1:5000/branchOrderDetail/10018
-###                     accepted  http://127.0.0.1:5000/branchOrderDetail/10016
-###                     completed http://127.0.0.1:5000/branchOrderDetail/10026
+### 10-2 店家: 訂單詳細  pending   http://127.0.0.1:5000/Zhongxing%20Store/branchOrderDetail/10018
+###                     accepted  http://127.0.0.1:5000/Shinkuchan%20Store/branchOrderDetail/10016
+###                     completed http://127.0.0.1:5000/Nandu%20Store/branchOrderDetail/10026
 @app.route('/<branch_name>/branchOrderDetail/<order_number>') # order_number of the order
 def show_seller_orderDetail(branch_name, order_number):
 
@@ -596,7 +597,7 @@ def complete_order(branch_name, order_number):
 
 
 
-### 11 店家: 歷史紀錄 http://127.0.0.1:5000/Daan%20Store/branch_history
+### 11 店家: 歷史訂單 http://127.0.0.1:5000/Daan%20Store/branch_history
 @app.route('/<branch_name>/branch_history') # branch的name
 def show_branch_history_orders(branch_name):
 
