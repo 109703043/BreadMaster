@@ -39,6 +39,13 @@ finally:
 
 
 
+### 00 root redirect to login page 
+@app.route('/')
+def root_redirect_to_login():
+    return redirect(url_for('render_login'))
+
+
+
 ### 01 登入 http://127.0.0.1:5000/login
 @app.route('/login', methods=['GET'])
 def render_login():
