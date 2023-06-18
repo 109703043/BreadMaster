@@ -3,6 +3,20 @@
     <head>
        <meta charset="UTF-8"></meta>
        <title>在商店內選購物品</title>
+       <style>
+           table{
+               width: 100%;
+               text-align: center;
+               border-collapse: collapse;
+           }
+           th, td{
+               border: 1px solid black;
+               padding: 8px;
+           }
+           th{
+               background-color: #EEEEEE;
+           }
+       </style>
     </head>
     <body>
       <ul>
@@ -58,18 +72,35 @@
      <hr/>
      <form method="POST" action="{{ url_for('order') }}">
       {% if leftover_products %}
-        {% for leftover_product in leftover_products %}
-          <div>
-          <input type="checkbox" name="leftover_product" value="{{ leftover_product.product_code }}">
-            <label>{{leftover_product.branch_name }},&nbsp;&nbsp;</label>
-            <label>{{leftover_product.product_code}},&nbsp;&nbsp;</label>
-            <label>{{leftover_product.expiration_date}},&nbsp;&nbsp;</label>
-            <label>{{leftover_product.product_name}},&nbsp;&nbsp;</label>
-            <label>{{leftover_product.quantity_in_stock}},&nbsp;&nbsp;</label>
-            <label>{{leftover_product.price}},&nbsp;&nbsp;</label>
-            <label>{{leftover_product.product_description}}</label>
-          </div>
-        {% endfor %}
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>商品編號</th>
+            <th>賞味期限</th>
+            <th>商品名稱</th>
+            <th>剩餘數量</th>
+            <th>價格</th>
+            <th>商品介紹</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for leftover_product in leftover_products %}
+          <tr>
+            <td>
+              <input type="checkbox" name="leftover_product" value="{{ leftover_product.product_code }}">
+            </td>
+            <td>{{leftover_product.product_code}}</td>
+            <td>{{leftover_product.expiration_date}}</td>
+            <td>{{leftover_product.product_name}}</td>
+            <td>{{leftover_product.quantity_in_stock}}</td>
+            <td>{{leftover_product.price}}</td>
+            <td>{{leftover_product.product_description}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
       <input type="hidden" name="phone_number" value="{{ phone_number }}">
       <input type="hidden" name="branch_name" value="{{ branch_name }}">
       <button id="orderBtn">加入購物車</button>
