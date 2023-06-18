@@ -39,14 +39,21 @@ finally:
 
 
 
-### 00 root redirect to login page 
+### 00 Error 
+# @app.route('/errorPage', methods=['POST'])
+# def show_error():
+#     msg = request.form['error_msg']
+#     redirect_url = request.form['redirect_url']
+#     return render_template('00_errorPage', 
+#                            msg = msg, 
+#                            redirect_url = redirect_url)
+
+
+### 01 登入 http://127.0.0.1:5000
 @app.route('/')
 def root_redirect_to_login():
     return redirect(url_for('render_login'))
 
-
-
-### 01 登入 http://127.0.0.1:5000/login
 @app.route('/login', methods=['GET'])
 def render_login():
     return render_template('01_login.html')
@@ -61,6 +68,10 @@ def login(action):
                 return redirect(url_for('show_shoppingStore', phone_number = buyer_phone))
             else:
                 return "no bruh buyer doesn't exist"
+                # msg = request
+                # return redirect(url_for('show_error', 
+                #                         msg = 'Buyer does not exists', 
+                #                         redirect_url = url_for('render_login')))
         elif action == 'store_login':
             store_name = request.form['seller_store']
             store = Store.query.filter_by(branch_name = store_name).first()
@@ -79,9 +90,7 @@ def render_register():
 
 @app.route('/register/<action>', methods=['GET', 'POST'])
 def register(action):
-    # print("enter register")
     if request.method == 'POST':
-        # print("request.method == POST")
         if action == 'buyer_reg':
             phone_number = request.form['buyer_phone']
             name = request.form['buyer_name']
