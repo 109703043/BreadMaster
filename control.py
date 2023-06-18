@@ -58,7 +58,7 @@ def errorPage_redirect():
 def root_redirect_to_login():
     return redirect(url_for('render_login'))
 
-@app.route('/login', methods=['GET'])
+@app.route('/login')
 def render_login():
     return render_template('01_login.html')
 
