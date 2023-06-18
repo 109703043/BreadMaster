@@ -40,13 +40,17 @@ finally:
 
 
 ### 00 Error 
-# @app.route('/errorPage', methods=['POST'])
-# def show_error():
-#     msg = request.form['error_msg']
-#     redirect_url = request.form['redirect_url']
-#     return render_template('00_errorPage', 
-#                            msg = msg, 
-#                            redirect_url = redirect_url)
+@app.route('/errorPage/<msg>/<url_redirect>')
+def show_error(msg, url_redirect):
+    return render_template('00_errorPage.html', 
+                           msg = msg, 
+                           url_redirect = url_redirect)
+                        #    url_redirect = request.referrer)
+
+@app.route('/errorPage/redirect', methods=['POST'])
+def errorPage_redirect():
+    url_redirect = request.form['url_redirect']
+    return redirect(url_redirect)
 
 
 ### 01 登入 http://127.0.0.1:5000
@@ -67,18 +71,18 @@ def login(action):
             if(buyer != None):
                 return redirect(url_for('show_shoppingStore', phone_number = buyer_phone))
             else:
-                return "no bruh buyer doesn't exist"
-                # msg = request
-                # return redirect(url_for('show_error', 
-                #                         msg = 'Buyer does not exists', 
-                #                         redirect_url = url_for('render_login')))
+                return redirect(url_for('show_error', 
+                                        msg = 'Buyer does not exist', 
+                                        url_redirect = url_for('render_login')))
         elif action == 'store_login':
             store_name = request.form['seller_store']
             store = Store.query.filter_by(branch_name = store_name).first()
             if(store != None):
                 return redirect(url_for('show_leftoverProduct', branch_name = store_name))
             else:
-                return "no bruh store doesn't exist"
+                return redirect(url_for('show_error', 
+                                        msg = 'Store does not exist', 
+                                        url_redirect = url_for('render_login')))
     return redirect(url_for('render_login'))
 
 
@@ -102,10 +106,13 @@ def register(action):
             
             # If a matching record is found, update the fields
             if buyer:
-                buyer.name = name
-                buyer.address = address
-                buyer.email = email
-                db.session.commit()  # Commit the changes
+                return redirect(url_for('show_error', 
+                                        msg = 'User existed', 
+                                        url_redirect = url_for('render_register')))
+                # buyer.name = name
+                # buyer.address = address
+                # buyer.email = email
+                # db.session.commit()  # Commit the changes
             else:
                 # If no matching record is found, create a new Buyer record
                 buyer = Buyer(phone_number=phone_number, name=name, address=address, email=email)
@@ -123,10 +130,13 @@ def register(action):
             
             # If a matching record is found, update the fields
             if store:
-                store.phone_number = phone_number
-                store.business_hours = business_hours
-                store.address = address
-                db.session.commit()  # Commit the changes
+                return redirect(url_for('show_error', 
+                                        msg = 'Store existed', 
+                                        url_redirect = url_for('render_register')))
+                # store.phone_number = phone_number
+                # store.business_hours = business_hours
+                # store.address = address
+                # db.session.commit()  # Commit the changes
             else:
                 # If no matching record is found, create a new Store record
                 store = Store(branch_name=branch_name, phone_number=phone_number, business_hours=business_hours, address=address)
