@@ -17,7 +17,7 @@ git clone https://github.com/109703043/BreadMaster
 python control.py
 ### 開啟前端
 開啟瀏覽器造訪http://127.0.0.1:5000
-便可於上面進行基本CRUD操作
+便可於上面進行操作
 
 # 系統架構
 前端: html
