@@ -12,7 +12,15 @@ git clone https://github.com/109703043/BreadMaster
 開啟MySQL workbench，並於VSCode等編譯環境開啟BreadMaster資料夾，更改create_table.ipynb中的host, port, user, password並execute，即可於MySQL workbench看見breadmaster schema。
 ### 輸入測試資料
 於MySQL workbench執行breadmaster_TableValue.sql
-### 更改control.py中的host, port, user, password並execute
+### 啟動後端
+更改control.py中的host, port, user, password並執行
 python control.py
-### 開始使用
-開啟瀏覽器造訪http://127.0.0.1:5000'
+### 開啟前端
+開啟瀏覽器造訪http://127.0.0.1:5000
+便可於上面進行基本CRUD操作
+
+# 系統架構
+前端: html
+後端: python
+DBMS: MySQL工具、系統模組
+pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql
