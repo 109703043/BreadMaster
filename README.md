@@ -8,6 +8,13 @@
 > cd _路徑_
 ### 下載程式碼
 > git clone https://github.com/109703043/BreadMaster
+<pre>
+```bash
+#!/bin/bash
+
+git clone https://github.com/109703043/BreadMaster
+```
+</pre>
 ### 建立資料庫
 開啟MySQL workbench，並於VSCode等編譯環境開啟BreadMaster資料夾，更改create_table.ipynb中的host, port, user, password並execute，即可於MySQL workbench看見breadmaster schema。
 ### 輸入測試資料
