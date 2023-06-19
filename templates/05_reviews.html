@@ -4,13 +4,13 @@
     <title>店家資訊</title>
 </head>
 <body>
-    <ul>
+    <ul><!-- 上方選單 -->
         <li><a href="{{ url_for('show_shoppingStore', phone_number = phone_number) }}">所有店家</a></li>
         <li><a href="{{ url_for('show_buyer_orderOutline', phone_number = phone_number) }}">訂購紀錄</a></li>
         <li><a href="{{ url_for('render_shoppingCart', phone_number = phone_number) }}">購物車</a></li>
     </ul>
     <hr>
-    
+    <!-- 店家基本資訊-->
     <h1>{{ store.branch_name }}</h1>
     <p>電話：{{ store.phone_number }}</p>
     <p>營業時間：{{ store.business_hours }}</p>
@@ -19,13 +19,13 @@
     {% set phone_number = buyer.phone_number %}
     {% set branch_name = store.branch_name %}
 
-    {% if is_favorite %}
+    {% if is_favorite %}<!-- 刪除常用店家 -->
         <form method="POST" action="{{ url_for('modify_review', action = 'delete_favorite') }}">
             <input type="hidden" name="phone_number" value="{{ phone_number }}">
             <input type="hidden" name="branch_name" value="{{ branch_name }}">
             <button type="submit" id="remove-favorite-btn">從常用店家刪除</button>
         </form>
-    {% else %}
+    {% else %}<!-- 加入常用店家 -->
         <form method="POST" action="{{ url_for('modify_review', action = 'add_favorite') }}">
             <input type="hidden" name="phone_number" value="{{ phone_number }}">
             <input type="hidden" name="branch_name" value="{{ branch_name }}">
@@ -36,20 +36,20 @@
     <hr>
     <h3>用戶評論</h3>
     <hr>
-    {% if reviews %}
+    {% if reviews %}<!-- 店家有評論 -->
         {% for review in reviews %}
-            {% if review.phone_number != phone_number %}
+            {% if review.phone_number != phone_number %}<!-- 不秀出我的評論，我的評論留於最後秀出 -->
                 <h3>Phone Number: {{ review.phone_number }}</h3>
-                {% if review.score != 0 %}
+                {% if review.score != 0 %}<!-- 不為空值才秀出 -->
                     <p>Score: {{ review.score }}</p>
                 {% endif %}
-                {% if review.content != "" %}
+                {% if review.content != "" %}<!-- 不為空值才秀出 -->
                     <p>Content: {{ review.content }}</p>
                 {% endif %}
                 <hr>
             {% endif %}
         {% endfor %}
-        {% if my_score == 0 and my_content == "" %}
+        {% if my_score == 0 and my_content == "" %}<!-- 我尚未評論此店家 -->
             <form method="POST" action="{{ url_for('modify_review', action = 'modify_review') }}"> 
                 <h3>我的評論</h3>
                 <p>Score: 
@@ -68,7 +68,7 @@
                 <p><input type="hidden" name="branch_name" value="{{ branch_name }}"></p>
                 <p><button type="submit">送出</button></p>
             </form>
-        {% else %}
+        {% else %}<!-- 我已未評論此店家，可刪除原本評價 -->
             <form method="POST" action="{{ url_for('modify_review', action = 'delete_review') }}"> 
                 <h3>我的評論</h3>
                 {% if my_score != 0 %}
@@ -82,7 +82,7 @@
                 <p><button type="submit">刪除我的評論</button></p>
             </form>
         {% endif %}
-    {% else %}
+    {% else %}<!-- 店家沒有評論 -->
         <p>尚無評論</p>
         <form method="POST" action="{{ url_for('modify_review', action = 'modify_review') }}"> 
             <h3>我的評論</h3>

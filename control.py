@@ -316,7 +316,6 @@ def modify_review(action):
                 review.score = my_score
                 review.content = my_content
                 
-                # print(review.score == 0, review.content == '')
                 # 刪除空評論
                 if review.score == 0 and review.content == '':
                     db.session.delete(review)
