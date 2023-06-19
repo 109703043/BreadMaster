@@ -7,7 +7,7 @@
 ### 移動到目標資料夾
 cd _路徑_
 ### 下載程式碼
-git clone \https://github.com/109703043/BreadMaster
+git clone '\https://github.com/109703043/BreadMaster'
 ### 建立資料庫
 開啟MySQL workbench，並於VSCode等編譯環境開啟BreadMaster資料夾，更改create_table.ipynb中的host, port, user, password並execute，即可於MySQL workbench看見breadmaster schema。
 ### 輸入測試資料
@@ -15,4 +15,4 @@ git clone \https://github.com/109703043/BreadMaster
 ### 更改control.py中的host, port, user, password並execute
 python control.py
 ### 造訪網站
-開啟瀏覽器造訪\http://127.0.0.1:5000，即可開始使用
+開啟瀏覽器造訪'\http://127.0.0.1:5000'，即可開始使用
