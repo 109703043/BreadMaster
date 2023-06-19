@@ -29,3 +29,5 @@ python control.py
 後端: python  
 DBMS: MySQL  
 工具、系統模組 pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql  
+
+# 
