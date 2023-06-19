@@ -14,13 +14,18 @@ git clone https://github.com/109703043/BreadMaster
 於MySQL workbench執行breadmaster_TableValue.sql
 ### 啟動後端
 更改control.py中的host, port, user, password並執行
+
 python control.py
 ### 開啟前端
 開啟瀏覽器造訪http://127.0.0.1:5000
+
 便可於上面進行操作
 
 # 系統架構
 前端: html
+
 後端: python
+
 DBMS: MySQL工具、系統模組
+
 pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql
