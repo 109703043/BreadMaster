@@ -170,18 +170,24 @@ def show_shoppingStore(phone_number):
 ### 04 買家: 進入店家選購 http://127.0.0.1:5000/purchase/0923558899/Nandu%20Store
 @app.route('/purchase/<phone_number>/<branch_name>') # buyer.phone_number
 def purchase(phone_number, branch_name):
-   leftover_products = db.session.query(Leftover_Product).filter(Leftover_Product.branch_name == branch_name).all()
-   store = Store.query.filter_by(branch_name = branch_name).first()
-   if leftover_products != []:
-       return render_template('04_purchase.html', 
+    leftover_products = db.session.query(Leftover_Product).filter(Leftover_Product.branch_name == branch_name).all()
+    store = Store.query.filter_by(branch_name = branch_name).first()
+    favorite = Frequently_Used_Store.query.filter_by(phone_number = phone_number, branch_name = branch_name).first() #0619
+    is_favorite = False
+    if(favorite is not None):
+        is_favorite = True
+    if leftover_products != []:
+        return render_template('04_purchase.html', 
                               leftover_products = leftover_products, 
                               phone_number = phone_number, 
                               branch_name = branch_name, 
-                              store = store)
-   else:
-       return render_template('04_purchase.html', 
+                              store = store,
+                              is_favorite = is_favorite)
+    else:
+        return render_template('04_purchase.html', 
                               message="No leftover_product found.", 
-                              store = store)
+                              store = store,
+                              is_favorite = is_favorite)
 
 @app.route("/addToFavorites", methods=['POST'])
 def addToFavorites():
@@ -289,14 +295,14 @@ def modify_review(action):
     
             favorite_store = Frequently_Used_Store(phone_number=phone_number, branch_name=branch_name)
             db.session.add(favorite_store)
-            db.session.commit()
+
         elif action == 'delete_favorite':
             phone_number = request.form['phone_number']
             branch_name = request.form['branch_name']
     
             favorite_store = Frequently_Used_Store.query.filter_by(phone_number=phone_number, branch_name=branch_name).first()
             db.session.delete(favorite_store)
-            db.session.commit()
+
         elif action == 'modify_review':
             my_score = int(request.form['my_score'])
             my_content = request.form['my_content']
@@ -319,6 +325,13 @@ def modify_review(action):
                 # 新增新的評論
                 review = Review(phone_number=phone_number, branch_name=branch_name, score=my_score, content=my_content)
                 db.session.add(review)
+        
+        elif action == 'delete_review':
+            phone_number = request.form['phone_number']
+            branch_name = request.form['branch_name']
+
+            review = Review.query.filter_by(phone_number=phone_number, branch_name=branch_name).first()
+            db.session.delete(review)
 
     db.session.commit()
     return redirect(url_for('show_reviews', phone_number=phone_number, branch_name=branch_name))

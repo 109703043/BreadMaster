@@ -34,7 +34,7 @@
     {% endif %}
     
     <hr>
-    <h4>用戶評論</h4>
+    <h3>用戶評論</h3>
     <hr>
     {% if reviews %}
         {% for review in reviews %}
@@ -43,34 +43,66 @@
                 {% if review.score != 0 %}
                     <p>Score: {{ review.score }}</p>
                 {% endif %}
-                {% if review.content %}
+                {% if review.content != "" %}
                     <p>Content: {{ review.content }}</p>
                 {% endif %}
                 <hr>
             {% endif %}
         {% endfor %}
+        {% if my_score == 0 and my_content == "" %}
+            <form method="POST" action="{{ url_for('modify_review', action = 'modify_review') }}"> 
+                <h3>我的評論</h3>
+                <p>Score: 
+                    <select name="my_score">
+                        <option value= 0 {% if my_score == 0 %}selected{% endif %}>請選擇</option>   <!-- None = 0 -->
+                        <option value= 1 {% if my_score == 1 %}selected{% endif %}>1</option>
+                        <option value= 2 {% if my_score == 2 %}selected{% endif %}>2</option>
+                        <option value= 3 {% if my_score == 3 %}selected{% endif %}>3</option>
+                        <option value= 4 {% if my_score == 4 %}selected{% endif %}>4</option>
+                        <option value= 5 {% if my_score == 5 %}selected{% endif %}>5</option>
+                        <!-- 添加其他選項 -->
+                    </select>
+                </p>
+                <p>Content: <input type="text" name="my_content" value="{{ my_content }}"></p>
+                <p><input type="hidden" name="phone_number" value="{{ phone_number }}"></p>
+                <p><input type="hidden" name="branch_name" value="{{ branch_name }}"></p>
+                <p><button type="submit">送出</button></p>
+            </form>
+        {% else %}
+            <form method="POST" action="{{ url_for('modify_review', action = 'delete_review') }}"> 
+                <h3>我的評論</h3>
+                {% if my_score != 0 %}
+                        <p>Score: {{ my_score }}</p>
+                {% endif %}
+                {% if my_content != "" %}
+                    <p>Content: {{ my_content }}</p>
+                {% endif %}
+                <p><input type="hidden" name="phone_number" value="{{ phone_number }}"></p>
+                <p><input type="hidden" name="branch_name" value="{{ branch_name }}"></p>
+                <p><button type="submit">刪除我的評論</button></p>
+            </form>
+        {% endif %}
     {% else %}
         <p>尚無評論</p>
+        <form method="POST" action="{{ url_for('modify_review', action = 'modify_review') }}"> 
+            <h3>我的評論</h3>
+            <p>Score: 
+                <select name="my_score">
+                    <option value= 0 {% if my_score == 0 %}selected{% endif %}>請選擇</option>   <!-- None = 0 -->
+                    <option value= 1 {% if my_score == 1 %}selected{% endif %}>1</option>
+                    <option value= 2 {% if my_score == 2 %}selected{% endif %}>2</option>
+                    <option value= 3 {% if my_score == 3 %}selected{% endif %}>3</option>
+                    <option value= 4 {% if my_score == 4 %}selected{% endif %}>4</option>
+                    <option value= 5 {% if my_score == 5 %}selected{% endif %}>5</option>
+                    <!-- 添加其他選項 -->
+                </select>
+            </p>
+            <p>Content: <input type="text" name="my_content" value="{{ my_content }}"></p>
+            <p><input type="hidden" name="phone_number" value="{{ phone_number }}"></p>
+            <p><input type="hidden" name="branch_name" value="{{ branch_name }}"></p>
+            <p><button type="submit">送出</button></p>
+        </form>
     {% endif %}
-
-    <form method="POST" action="{{ url_for('modify_review', action = 'modify_review') }}"> 
-        <h3>我的評論:</h3>
-        <p>Score: 
-            <select name="my_score">
-                <option value= 0 {% if my_score == 0 %}selected{% endif %}>請選擇</option>   <!-- None = 0 -->
-                <option value= 1 {% if my_score == 1 %}selected{% endif %}>1</option>
-                <option value= 2 {% if my_score == 2 %}selected{% endif %}>2</option>
-                <option value= 3 {% if my_score == 3 %}selected{% endif %}>3</option>
-                <option value= 4 {% if my_score == 4 %}selected{% endif %}>4</option>
-                <option value= 5 {% if my_score == 5 %}selected{% endif %}>5</option>
-                <!-- 添加其他選項 -->
-            </select>
-        </p>
-        <p>Content: <input type="text" name="my_content" value="{{ my_content }}"></p>
-        <p><input type="hidden" name="phone_number" value="{{ phone_number }}"></p>
-        <p><input type="hidden" name="branch_name" value="{{ branch_name }}"></p>
-        <p><button type="submit">送出</button></p>
-    </form>
 
 </body>
 </html>

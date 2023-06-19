@@ -44,17 +44,19 @@
       }
   </style>
   <div class="button-container">
-     <form action="{{ url_for('addToFavorites') }}" method="post">
-        <input type="hidden" name="phone_number" value="{{ phone_number }}">
-        <input type="hidden" name="branch_name" value="{{ branch_name }}">
-        <button id="addToFavoritesBtn">加入常用店家</button>
-      </form>
-
-      <form action="{{ url_for('removeFromFavorites') }}" method="post">
-        <input type="hidden" name="phone_number" value="{{ phone_number }}">
-        <input type="hidden" name="branch_name" value="{{ branch_name }}">
-        <button id="removeFromFavoritesBtn">刪除常用店家</button>
-      </form>
+      {% if is_favorite %} <!-- 0619 -->
+        <form method="POST" action="{{ url_for('removeFromFavorites') }}">
+          <input type="hidden" name="phone_number" value="{{ phone_number }}">
+          <input type="hidden" name="branch_name" value="{{ branch_name }}">
+          <button type="submit" id="remove-favorite-btn">從常用店家刪除</button>
+        </form>
+      {% else %}
+        <form method="POST" action="{{ url_for('addToFavorites') }}">
+          <input type="hidden" name="phone_number" value="{{ phone_number }}">
+          <input type="hidden" name="branch_name" value="{{ branch_name }}">
+          <button type="submit" id="add-favorite-btn">加入常用店家</button>
+        </form>
+      {% endif %}
       
       <form action="{{ url_for('show_reviews', phone_number = phone_number, branch_name = branch_name) }}">
         <button id="reviewsBtn">查看店家評論</button>
