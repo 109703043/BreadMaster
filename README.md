@@ -39,7 +39,7 @@ pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql
 # ER Model
 ![惜食平台_ER Model](https://github.com/109703043/BreadMaster/assets/132145188/c5492a1a-05e6-4554-8425-ea396f99af12)
 
-# Schema
+# Relational Schema
 ![惜食平台_Relational Schema設計報告_page-0001](https://github.com/109703043/BreadMaster/assets/132145188/8d914165-3bd1-4d8d-8ce9-2b7fca3193bc)
 
 
