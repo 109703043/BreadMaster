@@ -25,14 +25,14 @@ python control.py
 開啟瀏覽器造訪http://127.0.0.1:5000 便可於上面進行操作  
 
 # 系統架構
-####前端程式語言
+#### 前端程式語言
 html  
-####後端程式語言
+#### 後端程式語言
 python  
-####DBMS
+#### DBMS
 MySQL  
-####工具、系統模組 pip install 的 packages 列表
-Flask, requests, flask-sqlalchemy, pymysql  
+#### 工具、系統模組 
+pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql  
 ![惜食平台圖檔](https://github.com/109703043/BreadMaster/assets/132145188/cb5ecd41-bbbc-45c0-af1e-f352db5843ca)
 
 
