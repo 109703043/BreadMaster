@@ -24,8 +24,7 @@ pip install Flask, requests, flask-sqlalchemy, pymysql, mysqlclient
 python control.py
 ```
 若出現以下訊息表建立編譯器成功，可於MySQL workbench看見名為breadmaster的schema，內含8個table
-<font color="grey">測試<br>測試第二航</font>
-<font color="grey">
+```
 資料庫 'BreadMaster' 建立成功  
  * Serving Flask app 'control'  
  * Debug mode: on  
@@ -36,7 +35,7 @@ Press CTRL+C to quit
 資料庫 'BreadMaster' 建立成功  
  * Debugger is active!  
  * Debugger PIN: 107-444-901  
-</font>
+```
 
 #### 輸入測試資料
 於MySQL workbench開啟目標資料夾中的breadmaster_TableValue.sql並執行，完畢後讓MySQL workbench保持開啟狀態  
