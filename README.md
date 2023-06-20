@@ -41,7 +41,7 @@ Press CTRL+C to quit
 於MySQL workbench開啟目標資料夾中的breadmaster_TableValue.sql並執行，完畢後讓MySQL workbench保持開啟狀態  
 
 #### 開啟前端
-開啟瀏覽器造訪http://127.0.0.1:5000 便可於上面進行操作  
+開啟瀏覽器造訪http://127.0.0.1:5000 便可於上面進行操作系統功能  
 
 # 系統功能一覽
 ![惜食平台系統功能一覽png](https://github.com/109703043/BreadMaster/assets/132145188/54b0505e-e5af-4a75-8e6f-fc383254e961)
