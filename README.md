@@ -12,17 +12,19 @@ cd 路徑
 ```
 git clone https://github.com/109703043/BreadMaster
 ```
-#### 建立資料庫
-開啟MySQL workbench，並於VSCode等編譯環境開啟BreadMaster資料夾，更改create_table.ipynb中的host, port, user, password並execute，即可於MySQL workbench看見breadmaster schema。
-#### 輸入測試資料
-於MySQL workbench執行breadmaster_TableValue.sql，完畢後讓MySQL workbench保持開啟狀態
 #### 啟動後端
-更改control.py中的host, port, user, password並執行  
+1. 開啟MySQL workbench  
+2. 於VSCode等編譯環境開啟目標資料夾  
+3. 安裝封包，於Terminal輸入  
+```
+pip install Flask, requests, flask-sqlalchemy, pymysql, mysqlclient 
+```
+4. 更改control.py中的host, port, user, password(Line 16, Line 22-25)並執行  
 ```
 python control.py
 ```
-理應會出現以下訊息
-```
+若出現以下訊息表建立編譯器成功，可於MySQL workbench看見名為breadmaster的schema，內含8個table
+<font color="grey">
 資料庫 'BreadMaster' 建立成功  
  * Serving Flask app 'control'  
  * Debug mode: on  
@@ -32,8 +34,10 @@ Press CTRL+C to quit
  * Restarting with stat  
 資料庫 'BreadMaster' 建立成功  
  * Debugger is active!  
- * Debugger PIN: 107-444-901
- ```
+ * Debugger PIN: 107-444-901  
+</font>
+#### 輸入測試資料
+於MySQL workbench開啟目標資料夾中的breadmaster_TableValue.sql並執行，完畢後讓MySQL workbench保持開啟狀態  
 
 #### 開啟前端
 開啟瀏覽器造訪http://127.0.0.1:5000 便可於上面進行操作  
@@ -46,7 +50,7 @@ python
 #### DBMS
 MySQL  
 #### 工具、系統模組 
-pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql  
+pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql, mysqlclient
 ![惜食平台圖檔](https://github.com/109703043/BreadMaster/assets/132145188/cb5ecd41-bbbc-45c0-af1e-f352db5843ca)
 
 
