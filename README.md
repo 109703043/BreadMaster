@@ -15,7 +15,7 @@ git clone https://github.com/109703043/BreadMaster
 #### 建立資料庫
 開啟MySQL workbench，並於VSCode等編譯環境開啟BreadMaster資料夾，更改create_table.ipynb中的host, port, user, password並execute，即可於MySQL workbench看見breadmaster schema。
 #### 輸入測試資料
-於MySQL workbench執行breadmaster_TableValue.sql
+於MySQL workbench執行breadmaster_TableValue.sql，完畢後讓MySQL workbench保持開啟狀態
 #### 啟動後端
 更改control.py中的host, port, user, password並執行  
 ```
