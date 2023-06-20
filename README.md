@@ -34,6 +34,9 @@ Press CTRL+C to quit
  * Debugger is active!  
  * Debugger PIN: 107-444-901
  ```
+```python
+print('\033[1;32m編譯成功\033[0m')
+
 #### 開啟前端
 開啟瀏覽器造訪http://127.0.0.1:5000 便可於上面進行操作  
 
