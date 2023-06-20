@@ -21,6 +21,18 @@ git clone https://github.com/109703043/BreadMaster
 ```
 python control.py
 ```
+理應會出現以下訊息  
+資料庫 'BreadMaster' 建立成功  
+ * Serving Flask app 'control'  
+ * Debug mode: on  
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.  
+ * Running on http://127.0.0.1:5000  
+Press CTRL+C to quit  
+ * Restarting with stat  
+資料庫 'BreadMaster' 建立成功  
+ * Debugger is active!  
+ * Debugger PIN: 107-444-901
+ * 
 #### 開啟前端
 開啟瀏覽器造訪http://127.0.0.1:5000 便可於上面進行操作  
 
