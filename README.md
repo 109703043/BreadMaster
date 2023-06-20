@@ -54,6 +54,8 @@ MySQL
 pip install 的 packages 列表: Flask, requests, flask-sqlalchemy, pymysql, mysqlclient
 ![惜食平台圖檔](https://github.com/109703043/BreadMaster/assets/132145188/cb5ecd41-bbbc-45c0-af1e-f352db5843ca)
 
+# 系統功能一覽
+![惜食平台系統功能一覽png](https://github.com/109703043/BreadMaster/assets/132145188/54b0505e-e5af-4a75-8e6f-fc383254e961)
 
 # ER Model
 ![惜食平台_ER Model](https://github.com/109703043/BreadMaster/assets/132145188/c5492a1a-05e6-4554-8425-ea396f99af12)
