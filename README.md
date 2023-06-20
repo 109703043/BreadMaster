@@ -36,6 +36,7 @@ Press CTRL+C to quit
  * Debugger is active!  
  * Debugger PIN: 107-444-901  
 </font>
+
 #### 輸入測試資料
 於MySQL workbench開啟目標資料夾中的breadmaster_TableValue.sql並執行，完畢後讓MySQL workbench保持開啟狀態  
 
